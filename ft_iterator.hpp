@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 15:15:34 by jsubel            #+#    #+#             */
-/*   Updated: 2022/12/13 15:26:02 by jsubel           ###   ########.fr       */
+/*   Updated: 2022/12/19 13:16:02 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,53 @@ struct iterator
 	typedef Distance	difference_type;
 	typedef Pointer		pointer;
 	typedef Reference	reference;
-	
+	typedef Category	iterator_category;
+};
+
+/**
+ *  @defgroup iterator_tags Iterator Tags
+ *  These are empty types, used to distinguish different iterators.  The
+ *  distinction is not made by what they contain, but simply by what they
+ *  are.  Different underlying algorithms can then be used based on the
+ *  different operations supported by different iterator types.
+ */
+struct output_iterator_tag {};
+struct input_iterator_tag {};
+struct forward_iterator_tag : input_iterator_tag {};
+struct bidirectional_iterator_tag : forward_iterator_tag {};
+struct random_access_iterator_tag : bidirectional_iterator_tag {};
+
+
+template <class Iterator>
+struct iterator_traits
+{
+	typedef typename Iterator::value_type			value_type;
+	typedef typename Iterator::difference_type		difference_type;
+	typedef typename Iterator::pointer				pointer;
+	typedef typename Iterator::reference			reference;
+	typedef typename Iterator::iterator_category	iterator_category;
+};
+
+template <class T>
+struct iterator_traits<T*>
+{
+	typedef T							value_type;
+	typedef ptrdiff_t					difference_type;
+	typedef T*							pointer;
+	typedef T&							reference;
+	typedef random_access_iterator_tag	iterator_category;
 }
+template <class T>
+struct iterator_traits<const T*>
+{
+	typedef T							value_type;
+	typedef ptrdiff_t					difference_type;
+	typedef T*							pointer;
+	typedef T&							reference;
+	typedef random_access_iterator_tag	iterator_category;
+}
+
+
 } // namespace
 
 #endif
