@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 15:15:34 by jsubel            #+#    #+#             */
-/*   Updated: 2022/12/19 13:16:02 by jsubel           ###   ########.fr       */
+/*   Updated: 2022/12/21 10:58:34 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ struct iterator_traits<T*>
 	typedef T*							pointer;
 	typedef T&							reference;
 	typedef random_access_iterator_tag	iterator_category;
-}
+};
 template <class T>
 struct iterator_traits<const T*>
 {
@@ -69,6 +69,21 @@ struct iterator_traits<const T*>
 	typedef T*							pointer;
 	typedef T&							reference;
 	typedef random_access_iterator_tag	iterator_category;
+};
+
+template <class Iterator>
+class reverse_iterator
+{
+	typedef Iterator	iterator_type;
+	
+	typedef typename iterator_traits<Iterator>::value_type			value_type;
+	typedef typename iterator_traits<Iterator>::difference_type		difference_type;
+	typedef typename iterator_traits<Iterator>::pointer				pointer;
+	typedef typename iterator_traits<Iterator>::reference			reference;
+	typedef typename iterator_traits<Iterator>::iterator_category	iterator_category;
+
+	private:
+		iterator_type _iterator;
 }
 
 
