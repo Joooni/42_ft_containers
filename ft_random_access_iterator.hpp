@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 14:18:31 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/02 15:29:41 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/02 17:14:18 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ namespace ft
 template<typename T>
 class random_access_iterator : public iterator<random_access_iterator_tag, T>
 {
-	private:
-		pointer	_current;
 
 	public:
 		typedef typename ft::iterator<random_access_iterator_tag, T>::difference_type	difference_type;
@@ -31,6 +29,10 @@ class random_access_iterator : public iterator<random_access_iterator_tag, T>
 		typedef typename ft::iterator<random_access_iterator_tag, T>::reference			reference;
 		typedef typename ft::iterator<random_access_iterator_tag, T>::iterator_category	iterator_category;
 
+	private:
+		pointer	_current;
+
+	public:
 		// Constructors
 		random_access_iterator() : _current(0) {}
 		random_access_iterator(const random_access_iterator &rhs) : _current(rhs._current) {}
@@ -55,7 +57,7 @@ class random_access_iterator : public iterator<random_access_iterator_tag, T>
 
 		random_access_iterator &operator++()
 		{
-			this->_current;
+			this->_current++;
 			return (*this);
 		}
 
@@ -81,12 +83,12 @@ class random_access_iterator : public iterator<random_access_iterator_tag, T>
 
 		random_access_iterator &operator+(difference_type n) const
 		{
-			return (this->_current + n;);
+			return (this->_current + n);
 		}
 
 		random_access_iterator &operator-(difference_type n) const
 		{
-			return (this->_current - n;);
+			return (this->_current - n);
 		}
 
 		random_access_iterator &operator+=(difference_type n)

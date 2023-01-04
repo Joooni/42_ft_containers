@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 15:15:34 by jsubel            #+#    #+#             */
-/*   Updated: 2022/12/21 10:58:34 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/04 08:47:14 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,18 +74,108 @@ struct iterator_traits<const T*>
 template <class Iterator>
 class reverse_iterator
 {
-	typedef Iterator	iterator_type;
-	
-	typedef typename iterator_traits<Iterator>::value_type			value_type;
-	typedef typename iterator_traits<Iterator>::difference_type		difference_type;
-	typedef typename iterator_traits<Iterator>::pointer				pointer;
-	typedef typename iterator_traits<Iterator>::reference			reference;
-	typedef typename iterator_traits<Iterator>::iterator_category	iterator_category;
+	public:
+		typedef Iterator	iterator_type;
+
+		typedef typename iterator_traits<Iterator>::value_type			value_type;
+		typedef typename iterator_traits<Iterator>::difference_type		difference_type;
+		typedef typename iterator_traits<Iterator>::pointer				pointer;
+		typedef typename iterator_traits<Iterator>::reference			reference;
+		typedef typename iterator_traits<Iterator>::iterator_category	iterator_category;
 
 	private:
-		iterator_type _iterator;
-}
+		iterator_type _current;
 
+	public:
+		// Constructors
+		reverse_iterator(): _current() {}
+		explicit reverse_iterator(iterator_type it): _current(it) {}
+		template <class T>
+		reverse_iterator(const reverse_iterator<T> &revIt): _current(revIt.base()) {}
+
+		iterator_type base() const
+		{
+			return (this->_current);
+		}
+		//-*-*-*-*-*-*-*-*-*-//
+		// operator overloads//
+		//-*-*-*-*-*-*-*-*-*-//
+
+		// arithmetic operators
+
+		reverse_iterator &operator=(const reverse_iterator<T> &rhs)
+		{
+			this->_current = rhs.base();
+			return (*this);
+		}
+
+		reverse_iterator &operator+(difference_type n) const
+		{
+			return (reverse_iterator(this->_current - n));
+		}
+
+		reverse_iterator &operator-(difference_type n) const
+		{
+			return (reverse_iterator(this->_current + n));
+		}
+
+		reverse_iterator &operator+=(difference_type n)
+		{
+			this->_current -= n;
+			return (*this);
+		}
+
+		reverse_iterator &operator-=(difference_type n)
+		{
+			this->_current += n;
+			return (*this);
+		}
+
+		reverse_iterator &operator++()
+		{
+			this->_current--;
+			return (*this);
+		}
+
+		reverse_iterator operator++(int)
+		{
+			reverse_iterator tmp(*this);
+			++(*this);
+			return (tmp);
+		}
+
+		reverse_iterator &operator--()
+		{
+			this->_current--;
+			return (*this);
+		}
+
+		reverse_iterator operator--(int)
+		{
+			reverse_iterator tmp(*this);
+			--(*this);
+			return (tmp);
+		}
+
+		reference operator*() const
+		{
+			iterator_type _temp = this->_current;
+			--_temp;
+			return (*_temp);
+		}
+
+		pointer operator->() const
+		{
+			return (&(operator*()));
+		}
+
+		reference	operator[](difference_type n) const
+		{
+			return (*((*this) + n));
+		}
+};
+
+		// comparsion overloads
 
 } // namespace
 
