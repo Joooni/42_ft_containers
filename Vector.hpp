@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/05 09:00:24 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/05 09:46:02 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,7 +298,12 @@ class vector
 
 	iterator erase(iterator first, iterator last)
 	{
-		
+		difference_type n = last - first;
+		pointer	ptrFirst = first.base();
+		pointer ptrLast = ptrFirst + n;
+		while (ptrFirst != ptrLast)
+			this->_allocator.destroy(ptrFirst++);
+		// how to invalidate iterators and references at and past erasure point?
 	}
 
 	allocator_type	allocator_type() const
