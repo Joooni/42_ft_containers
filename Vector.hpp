@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/05 09:46:02 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/05 16:25:29 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ class vector
 		//    Constructors   //
 		//    Destructors    //
 		//-*-*-*-*-*-*-*-*-*-//
+
 	// construct empty vector
 	explicit vector(const allocator_type &alloc = allocator_type()) : _start(0), _end(0), _capacity(0), _allocator(alloc) {}
 
@@ -88,6 +89,7 @@ class vector
 		this->clear();
 		this->_allocator.deallocate(this->_start, this->_capacity);
 	}
+
 		//-*-*-*-*-*-*-*-*-*-//
 		//    Assignments    //
 		//-*-*-*-*-*-*-*-*-*-//
@@ -176,6 +178,7 @@ class vector
 	{
 		return (this->_start);
 	}
+
 		//-*-*-*-*-*-*-*-*-*-//
 		//     Iterators     //
 		//-*-*-*-*-*-*-*-*-*-//
@@ -288,7 +291,58 @@ class vector
 	template <class InputIterator>
 	iterator insert(iterator position, InputIterator first, InputIterator last)
 	{
-
+		// find length of range to insert
+		InputIterator	countIt = first;
+		size_type		distance = 0;
+		pointer			newStart = NULL;
+		pointer			newEnd = NULL;
+		pointer			copy = NULL;
+		while (countIt++ != last)
+			distance++;
+		if (this->size() + distance > this->_capacity)
+		{
+			// reallocation necessary as new vector is bigger than current capacity
+			size_type	newCapacity = 0;
+			if (this->_capacity * 2 >= this->size() + distance)
+				newCapacity = this->_capacity * 2;
+			else
+				newCapacity = this->size() + distance;
+			// allocate necessary space and copy elements over one by one
+			newStart = this->_allocator.allocate(newCapacity);
+			copy = this->_start;
+			newEnd = newStart;
+			// first loop: copy everythig from the old vector over to the new one
+			while (newEnd != position)
+			{
+				this->_allocator.construct(newEnd, *copy);
+				this->_allocator.destroy(copy);
+				++copy;
+				++newEnd;
+			}
+			// second loop: construct new elements from the range [first, last)
+			// could i use first as an iterator?
+			while (first != last)
+			{
+				this->_allocator.construct(newEnd, *first);
+				++newEnd;
+				++first;
+			}
+			while (copy != this->_end)
+			{
+				this->_allocator.construct(newEnd, *copy);
+				this->_allocator.destroy(copy);
+				++copy;
+				++newEnd;
+			}
+			this->_allocator.deallocate(this->_start, this->_capacity);
+			this->_start = newStart;
+			this->_end = newEnd;
+			this->_capacity = newCapacity;
+		}
+		else
+		{
+			// geil einfach reinzimmern
+		}
 	}
 
 	iterator erase(iterator pos)
@@ -298,13 +352,14 @@ class vector
 
 	iterator erase(iterator first, iterator last)
 	{
-		difference_type n = last - first;
-		pointer	ptrFirst = first.base();
-		pointer ptrLast = ptrFirst + n;
-		while (ptrFirst != ptrLast)
-			this->_allocator.destroy(ptrFirst++);
 		// how to invalidate iterators and references at and past erasure point?
 	}
+
+	void push_back(const value_type &value)
+	{
+
+	}
+
 
 	allocator_type	allocator_type() const
 	{
