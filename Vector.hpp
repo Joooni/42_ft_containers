@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/04 17:16:28 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/05 09:00:24 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ class vector
 		//-*-*-*-*-*-*-*-*-*-//
 		//    Assignments    //
 		//-*-*-*-*-*-*-*-*-*-//
+
 	vector &operator=(const vector &other)
 	{
 		if (*this == other)
@@ -100,25 +101,81 @@ class vector
 		return (*this);
 	}
 
-	/*
 	void assign(size_type count, const value_type &value)
 	{
-
+		this->clear();
+		this->insert(this->_end, count, value);
 	}
 
 	template <class InputIterator>
 	void assign(InputIterator first, InputIterator last)
 	{
-
+		this->clear();
+		this->insert(this->_end, first, last);
 	}
-	*/
 
 	allocator_type get_allocator() const
 	{
 		return (this->_allocator);
 	}
 
+		//-*-*-*-*-*-*-*-*-*-//
+		//   Element access  //
+		//-*-*-*-*-*-*-*-*-*-//
 
+	reference at(size_type pos)
+	{
+		if (pos >= this->size())
+			throw std::out_of_range("Index out of range");
+		return (*(this->_start + pos));
+	}
+
+	const_reference at(size_type pos) const
+	{
+		if (pos >= this->size())
+			throw std::out_of_range("Index out of range");
+		return (*(this->_start + pos));
+	}
+
+	reference operator[](size_type pos)
+	{
+		return (*(this->_start + pos));
+	}
+
+	const_reference operator[](size_type pos) const
+	{
+		return (*(this->_start + pos));
+	}
+
+	reference front()
+	{
+		return (*(this->_start));
+	}
+
+	const_reference front() const
+	{
+		return (*(this->_start));
+	}
+
+	reference back()
+	{
+		return (*(this->_end - 1));
+	}
+
+	const_reference back() const
+	{
+		return (*(this->_end - 1));
+	}
+
+	value_type *data()
+	{
+		return (this->_start);
+	}
+
+	const value_type *data() const
+	{
+		return (this->_start);
+	}
 		//-*-*-*-*-*-*-*-*-*-//
 		//     Iterators     //
 		//-*-*-*-*-*-*-*-*-*-//
@@ -194,7 +251,7 @@ class vector
 
 	void	reserve(size_type new_cap)
 	{
-		
+
 	}
 
 	unsigned int	capacity() const
@@ -204,6 +261,13 @@ class vector
 		//-*-*-*-*-*-*-*-*-*-//
 		//     Modifiers     //
 		//-*-*-*-*-*-*-*-*-*-//
+
+	void clear()
+	{
+		for (size_type i = 0; i < size(); i++)
+			this->_allocator.destroy(this->_start + i);
+		this->_end = this->_start;
+	}
 
 	// inserts
 	// add one element
@@ -227,12 +291,14 @@ class vector
 
 	}
 
-
-	void clear()
+	iterator erase(iterator pos)
 	{
-		for (size_type i = 0; i < size(); i++)
-			this->_allocator.destroy(this->_start + i);
-		this->_end = this->_start;
+		return (ths->_erase(pos, pos + 1));
+	}
+
+	iterator erase(iterator first, iterator last)
+	{
+		
 	}
 
 	allocator_type	allocator_type() const
