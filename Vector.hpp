@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/05 16:25:29 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/09 12:36:49 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ class vector
 
 	// constructs container with contents of range [first, last)
 	template<class InputIterator>
-	vector( InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type()) : _allocator(alloc)
+	vector( InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(), typename ft::enable_if<!std::is_integral<InputIterator>::value>::type* = 0) : _allocator(alloc)
 	{
 		InputIterator	countIt = first;
 		size_type		count = 0;
@@ -99,7 +99,7 @@ class vector
 		if (*this == other)
 			return (*this);
 		this->clear();
-		this->insert(this->_end, other->_first, other->_last);
+		this->insert(this->_end, other.begin(), other.end());
 		return (*this);
 	}
 
@@ -237,7 +237,7 @@ class vector
 
 	bool empty() const
 	{
-		if (this.size() == 0)
+		if (this->size() == 0)
 			return (true);
 		return (false);
 	}
@@ -247,14 +247,39 @@ class vector
 		return (this->_end - this->_start);
 	}
 
-	size_tzpe max_size() const
+	size_type max_size() const
 	{
 		return (this->_allocator.max_size());
 	}
 
-	void	reserve(size_type new_cap)
+	void	reserve(size_type newCapacity)
 	{
+		if (newCapacity > this->max_size())
+			throw std::length_error("HERE GOES ERROR CODE");
+		if (newCapacity > this->_capacity)
+		{
+			pointer	first = this->_start;
+			pointer	last = this->_end;
+			this->_allocator.allocate(newCapacity);
 
+			// // other implementation
+			// size_type size = this->size();
+			// pointer	temp = this->_start;
+			// for (size_type i = 0; i < size; i++)
+			// {
+			// 	this->_allocator.construct(temp + i, *(first + i));
+			// 	this->_allocator.destroy(first + i);
+			// }
+			this->_end = this->_start;
+			while (first != last)
+			{
+				this->_allocator.construct(this->_end++, *first);
+				this->_allocator.destroy(first);
+				++first;
+			}
+			this->_allocator.deallocate(first - this->size(), this->_capacity);
+			this->_capacity = newCapacity;
+		}
 	}
 
 	unsigned int	capacity() const
@@ -289,7 +314,7 @@ class vector
 	}
 
 	template <class InputIterator>
-	iterator insert(iterator position, InputIterator first, InputIterator last)
+	iterator insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
 	{
 		// find length of range to insert
 		InputIterator	countIt = first;
@@ -312,7 +337,7 @@ class vector
 			copy = this->_start;
 			newEnd = newStart;
 			// first loop: copy everythig from the old vector over to the new one
-			while (newEnd != position)
+			while (newEnd != position.base())
 			{
 				this->_allocator.construct(newEnd, *copy);
 				this->_allocator.destroy(copy);
@@ -341,29 +366,64 @@ class vector
 		}
 		else
 		{
-			// geil einfach reinzimmern
+			size_type distancePos = this->end() - position;	// distance to the value pointed to by position
+			copy = this->_end - distancePos;				// start point of insertion of values
+			if (this->_start != this->_end)
+			{
+				// vector is not empty, so move the values at position back by distance
+				// to make space for the inserted values
+				// start from the back to avoid complicated temporary storage
+				for (pointer ptr = this->_end + distance - 1; ptr > this->_end + distance - distancePos - 1; ptr--)
+				{
+					this->_allocator.construct(ptr, *(ptr - distance));
+					this->_allocator.destroy(ptr - distance);
+				}
+			}
+			for (size_type i = 0; i < distance; i++)
+				this->_allocator.construct(copy++, *(first++)); // put whatever first points to at copy and then increase both
+			this->_end += distance;
 		}
 	}
 
 	iterator erase(iterator pos)
 	{
-		return (ths->_erase(pos, pos + 1));
+		return (this->_erase(pos, pos + 1));
 	}
 
 	iterator erase(iterator first, iterator last)
 	{
 		// how to invalidate iterators and references at and past erasure point?
-	}
-
-	void push_back(const value_type &value)
-	{
+		difference_type distance = last - first;
 
 	}
 
+	// void push_back(const value_type &value)
+	// {
 
-	allocator_type	allocator_type() const
+	// }
+
+	// void pop_back()
+	// {
+
+	// }
+
+	void resize(size_type count, value_type value = value_type())
 	{
-		return (this->_allocator);
+		if (count > this->max_size())
+			throw std::length_error("HERE BE ERRORS");
+		if (count > this->_capacity)
+		{
+			if (count > this->_capacity * 2)
+				this->reserve(count);
+			else
+				this->reserve(this->_capacity * 2);
+		}
+		if (this->size() < count)
+			for (size_type i = this->size(); i < count; i++)
+				this->_allocator.construct(this->_end++, value);
+		else if (this->size() > count)
+			for (size_type i = this->size(); i > count; i--)
+				this->_allocator.destroy((this->_end--) - 1);
 	}
 
 	private:
@@ -371,7 +431,8 @@ class vector
 		pointer			_end;
 		unsigned int	_capacity;
 		allocator_type	_allocator;
-}
+};
+
 } // from namespace
 
 #endif

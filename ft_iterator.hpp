@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 15:15:34 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/04 08:47:14 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/09 12:08:29 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ class reverse_iterator
 
 		// arithmetic operators
 
-		reverse_iterator &operator=(const reverse_iterator<T> &rhs)
+		reverse_iterator &operator=(const reverse_iterator &rhs)
 		{
 			this->_current = rhs.base();
 			return (*this);
@@ -176,6 +176,11 @@ class reverse_iterator
 };
 
 		// comparsion overloads
+template <class Iterator>
+bool operator== (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+{
+	return (lhs.base() == rhs.base());
+}
 
 } // namespace
 
