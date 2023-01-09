@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/09 12:36:49 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/09 13:39:46 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "ft_random_access_iterator.hpp"
 #include <memory> // for std::allocator
 #include <vector> // for looking up stuff
-
+#include "utils.hpp"
 namespace ft
 {
 template < class T, class Allocator = std::allocator<T> >
@@ -309,12 +309,12 @@ class vector
 	// add n elements of value
 	void insert(iterator position, size_type n, const value_type &value)
 	{
-		ft::vector<T> filledWithValue(n, value);
-		this->insert(position, filledWithValue.begin(), filledWithValue.end());
+		ft::vector<T> filled(n, value);
+		this->insert(position, filled.begin(), filled.end());
 	}
 
 	template <class InputIterator>
-	iterator insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
+	void insert(iterator position, InputIterator first, InputIterator last, typename enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
 	{
 		// find length of range to insert
 		InputIterator	countIt = first;
