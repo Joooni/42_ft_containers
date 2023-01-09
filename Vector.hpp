@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/09 13:39:46 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/09 16:43:08 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ class vector
 	}
 
 	template <class InputIterator>
-	void assign(InputIterator first, InputIterator last)
+	void assign(InputIterator first, InputIterator last, typename enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
 	{
 		this->clear();
 		this->insert(this->_end, first, last);
@@ -366,7 +366,7 @@ class vector
 		}
 		else
 		{
-			size_type distancePos = this->end() - position;	// distance to the value pointed to by position
+			difference_type distancePos = this->_end - position;	// distance to the value pointed to by position
 			copy = this->_end - distancePos;				// start point of insertion of values
 			if (this->_start != this->_end)
 			{

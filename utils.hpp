@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utility.hpp                                        :+:      :+:    :+:   */
+/*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 13:15:39 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/04 13:21:56 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/09 13:41:55 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ template <bool B, typename T = void>
 struct enable_if {};
 
 template <typename T>
-struct enable_if<true, T> { typedef T type };
+struct enable_if<true, T> { typedef T type;};
 
 /*
 	here goes

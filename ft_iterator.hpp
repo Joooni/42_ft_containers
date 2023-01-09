@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 15:15:34 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/09 12:08:29 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/09 13:55:40 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ class reverse_iterator
 		{
 			return (this->_current);
 		}
+
 		//-*-*-*-*-*-*-*-*-*-//
 		// operator overloads//
 		//-*-*-*-*-*-*-*-*-*-//
@@ -139,14 +140,14 @@ class reverse_iterator
 
 		reverse_iterator operator++(int)
 		{
-			reverse_iterator tmp(*this);
+			reverse_iterator tmp = *this;
 			++(*this);
 			return (tmp);
 		}
 
 		reverse_iterator &operator--()
 		{
-			this->_current--;
+			this->_current++;
 			return (*this);
 		}
 
@@ -159,7 +160,7 @@ class reverse_iterator
 
 		reference operator*() const
 		{
-			iterator_type _temp = this->_current;
+			iterator_type _temp(this->_current);
 			--_temp;
 			return (*_temp);
 		}
@@ -171,7 +172,7 @@ class reverse_iterator
 
 		reference	operator[](difference_type n) const
 		{
-			return (*((*this) + n));
+			return (this->base()[-n - 1]);
 		}
 };
 
