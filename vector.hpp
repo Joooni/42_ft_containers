@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Vector.hpp                                         :+:      :+:    :+:   */
+/*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/09 16:43:08 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/10 15:44:47 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,10 @@ class vector
 	typedef typename allocator_type::pointer				pointer;
 	typedef typename allocator_type::const_pointer			const_pointer;
 
-	typedef typename ft::random_access_iterator<value_type>				iterator;
-	typedef typename ft::constant_random_access_iterator<value_type>	const_iterator;
-	typedef typename ft::reverse_iterator<iterator>						reverse_iterator;
-	typedef typename ft::reverse_iterator<const_iterator>				const_reverse_iterator;
+	typedef typename ft::random_access_iterator<value_type>					iterator;
+	typedef typename ft::constant_random_access_iterator<const value_type>	const_iterator;
+	typedef typename ft::reverse_iterator<iterator>							reverse_iterator;
+	typedef typename ft::reverse_iterator<const_iterator>					const_reverse_iterator;
 
 
 		//-*-*-*-*-*-*-*-*-*-//
@@ -261,15 +261,6 @@ class vector
 			pointer	first = this->_start;
 			pointer	last = this->_end;
 			this->_allocator.allocate(newCapacity);
-
-			// // other implementation
-			// size_type size = this->size();
-			// pointer	temp = this->_start;
-			// for (size_type i = 0; i < size; i++)
-			// {
-			// 	this->_allocator.construct(temp + i, *(first + i));
-			// 	this->_allocator.destroy(first + i);
-			// }
 			this->_end = this->_start;
 			while (first != last)
 			{
@@ -286,6 +277,7 @@ class vector
 	{
 		return (this->_capacity);
 	}
+
 		//-*-*-*-*-*-*-*-*-*-//
 		//     Modifiers     //
 		//-*-*-*-*-*-*-*-*-*-//
@@ -392,20 +384,33 @@ class vector
 
 	iterator erase(iterator first, iterator last)
 	{
-		// how to invalidate iterators and references at and past erasure point?
 		difference_type distance = last - first;
-
+		pointer	ptrFirst = first.base();
+		pointer	ptrLast = ptrFirst + distance;
+		// delete values between first and (not including) last
+		while (ptrFirst != ptrLast)
+			this->_allocator.destroy(ptrFirst++);
+		// copy everything from ptrFirst (e.g. last) to _end to where first points (e.g. what was deleted)
+		std::copy(ptrFirst, this->_end, first.base());
+		// cleanup for left over stuff
+		// delete elements starting at end that are moved forward and decrement end to point to the actual end again
+		for (difference_type i = 1; i >= distance; i++)
+		{
+			this->_allocator.destroy(this->_end - 1);
+			this->_end--;
+		}
+		return (last - distance);
 	}
 
-	// void push_back(const value_type &value)
-	// {
+	void push_back(const value_type &value)
+	{
+		this->insert(this->_end, value);
+	}
 
-	// }
-
-	// void pop_back()
-	// {
-
-	// }
+	void pop_back()
+	{
+		this->erase(this->_end - 1);
+	}
 
 	void resize(size_type count, value_type value = value_type())
 	{
@@ -424,6 +429,24 @@ class vector
 		else if (this->size() > count)
 			for (size_type i = this->size(); i > count; i--)
 				this->_allocator.destroy((this->_end--) - 1);
+	}
+
+	void swap (vector &other)
+	{
+		pointer			tmpstart		= this->_start;
+		pointer			tmpend			= this->_end;
+		unsigned int	tmpcapacity		= this->_capacity;
+		allocator_type	tmpallocator	= this->_allocator;
+
+		this->_start		= rhs._start; 
+		this->_end			= rhs._end;
+		this->_capacity		= rhs._capacity;
+		this->_allocator	= rhs._allocator;
+
+		rhs._start		= tmpstart;
+		rhs._end		= tmpend;
+		rhs._capacity	= tmpcapacity;
+		rhs._allocator	= tmpallocator;
 	}
 
 	private:

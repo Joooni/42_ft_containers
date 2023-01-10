@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 14:18:31 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/09 12:23:37 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/10 14:28:15 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,7 +220,7 @@ class constant_random_access_iterator : public iterator<random_access_iterator_t
 
 		constant_random_access_iterator &operator=(const constant_random_access_iterator<T> &rhs)
 		{
-			this->_current = rhs._current;
+			this->_current = rhs.base();
 			return (*this);
 		}
 
@@ -276,63 +276,63 @@ class constant_random_access_iterator : public iterator<random_access_iterator_t
 		//compare with non constant iterators
 		bool operator==(const random_access_iterator<T> rhs) const
 		{
-			return (this->_current == rhs._current);
+			return (this->_current == rhs.base());
 		}
 
 		bool operator>=(const random_access_iterator<T> rhs) const
 		{
-			return (this->_current >= rhs._current);
+			return (this->_current >= rhs.base());
 		}
 
 		bool operator<=(const random_access_iterator<T> rhs) const
 		{
-			return (this->_current <= rhs._current);
+			return (this->_current <= rhs.base());
 		}
 
 		bool operator!=(const random_access_iterator<T> rhs) const
 		{
-			return (this->_current != rhs._current);
+			return (this->_current != rhs.base());
 		}
 
 		bool operator>(const random_access_iterator<T> rhs) const
 		{
-			return (this->_current > rhs._current);
+			return (this->_current > rhs.base());
 		}
 
 		bool operator<(const random_access_iterator<T> rhs) const
 		{
-			return (this->_current < rhs._current);
+			return (this->_current < rhs.base());
 		}
 
 		//compare with constant iterators
 		bool operator==(const constant_random_access_iterator<T> rhs) const
 		{
-			return (this->_current == rhs._current);
+			return (this->_current == rhs.base());
 		}
 
 		bool operator>=(const constant_random_access_iterator<T> rhs) const
 		{
-			return (this->_current >= rhs._current);
+			return (this->_current >= rhs.base());
 		}
 
 		bool operator<=(const constant_random_access_iterator<T> rhs) const
 		{
-			return (this->_current <= rhs._current);
+			return (this->_current <= rhs.base());
 		}
 
 		bool operator!=(const constant_random_access_iterator<T> rhs) const
 		{
-			return (this->_current != rhs._current);
+			return (this->_current != rhs.base());
 		}
 
 		bool operator>(const constant_random_access_iterator<T> rhs) const
 		{
-			return (this->_current > rhs._current);
+			return (this->_current > rhs.base());
 		}
 
 		bool operator<(const constant_random_access_iterator<T> rhs) const
 		{
-			return (this->_current < rhs._current);
+			return (this->_current < rhs.base());
 		}
 
 		T &operator*() const
