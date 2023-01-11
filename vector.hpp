@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Vector.hpp                                         :+:      :+:    :+:   */
+/*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/11 08:39:31 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/11 14:53:26 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,9 +293,9 @@ class vector
 	// add one element
 	iterator insert(iterator position, const value_type &value)
 	{
-		size_type distance = position - this->_begin;
+		size_type distance = position - this->begin();
 		this->insert(position, 1, value);
-		return (this->_begin() + distance);
+		return (this->begin() + distance);
 	}
 
 	// add n elements of value
@@ -329,7 +329,7 @@ class vector
 			copy = this->_start;
 			newEnd = newStart;
 			// first loop: copy everythig from the old vector over to the new one
-			while (newEnd != position.base())
+			while (copy != position.base())
 			{
 				this->_allocator.construct(newEnd, *copy);
 				this->_allocator.destroy(copy);
@@ -412,6 +412,12 @@ class vector
 		this->erase(this->_end - 1);
 	}
 
+	/**
+	Resizes the container to contain count elements.
+
+	 * If the current size is greater than count, the container is reduced to its first count elements.
+	 * If the current size is less than count, additional copies of value are added
+	*/
 	void resize(size_type count, value_type value = value_type())
 	{
 		if (count > this->max_size())
@@ -444,8 +450,8 @@ class vector
 		this->_allocator	= other._allocator;
 
 		other._start		= tmpstart;
-		other._end		= tmpend;
-		other._capacity	= tmpcapacity;
+		other._end			= tmpend;
+		other._capacity		= tmpcapacity;
 		other._allocator	= tmpallocator;
 	}
 

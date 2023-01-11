@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 14:18:31 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/11 08:33:17 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/11 11:37:10 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,12 +250,12 @@ class constant_random_access_iterator : public iterator<random_access_iterator_t
 			return (tmp);
 		}
 
-		constant_random_access_iterator &operator+(difference_type n) const
+		constant_random_access_iterator operator+(difference_type n) const
 		{
 			return (this->_current + n);
 		}
 
-		constant_random_access_iterator &operator-(difference_type n) const
+		constant_random_access_iterator operator-(difference_type n) const
 		{
 			return (this->_current - n);
 		}
@@ -353,13 +353,13 @@ class constant_random_access_iterator : public iterator<random_access_iterator_t
 
 // non const
 template<class T>
-random_access_iterator<T> operator+ (typename ft::iterator<random_access_iterator_tag, T>::difference_type n, random_access_iterator<T> &it)
+random_access_iterator<T> operator+(typename ft::iterator<random_access_iterator_tag, T>::difference_type n, random_access_iterator<T> &it)
 {
 	return (it.base() + n);
 }
 
 template<class T>
-random_access_iterator<T> operator+ (typename ft::iterator<random_access_iterator_tag, T>::difference_type n, constant_random_access_iterator<T> &it)
+random_access_iterator<T> operator+(typename ft::iterator<random_access_iterator_tag, T>::difference_type n, constant_random_access_iterator<T> &it)
 {
 	return (it.base() + n);
 }
