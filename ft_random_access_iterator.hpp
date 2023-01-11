@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 14:18:31 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/10 14:28:15 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/11 08:33:17 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -352,30 +352,43 @@ class constant_random_access_iterator : public iterator<random_access_iterator_t
 };
 
 // non const
-template<typename T>
+template<class T>
 random_access_iterator<T> operator+ (typename ft::iterator<random_access_iterator_tag, T>::difference_type n, random_access_iterator<T> &it)
 {
 	return (it.base() + n);
 }
 
-template<typename T>
+template<class T>
 random_access_iterator<T> operator+ (typename ft::iterator<random_access_iterator_tag, T>::difference_type n, constant_random_access_iterator<T> &it)
 {
 	return (it.base() + n);
 }
 
-template<typename T>
+template<class T>
+typename random_access_iterator<T>::difference_type operator-(const random_access_iterator<T> &lhs, const random_access_iterator<T> &rhs)
+{
+	return (lhs.base() - rhs.base());
+}
+
+template<class T>
+typename random_access_iterator<T>::difference_type operator-(const random_access_iterator<T> &lhs, const constant_random_access_iterator<const T> &rhs)
+{
+	return (lhs.base() - rhs.base());
+}
+
+template<class T>
 typename random_access_iterator<T>::difference_type operator-(const constant_random_access_iterator<const T> &lhs, const random_access_iterator<T> &rhs)
 {
 	return (lhs.base() - rhs.base());
 }
 
-template<typename T>
+template<class T>
 typename random_access_iterator<T>::difference_type operator-(const constant_random_access_iterator<T> &lhs, const constant_random_access_iterator<T> &rhs)
 {
 	return (lhs.base() - rhs.base());
 }
 
 } //namespace
+
 
 #endif

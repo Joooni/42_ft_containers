@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vector.hpp                                         :+:      :+:    :+:   */
+/*   Vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/10 15:44:47 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/11 08:39:31 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ class vector
 
 	// constructs container with contents of range [first, last)
 	template<class InputIterator>
-	vector( InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(), typename ft::enable_if<!std::is_integral<InputIterator>::value>::type* = 0) : _allocator(alloc)
+	vector( InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0) : _allocator(alloc)
 	{
 		InputIterator	countIt = first;
 		size_type		count = 0;
@@ -110,7 +110,7 @@ class vector
 	}
 
 	template <class InputIterator>
-	void assign(InputIterator first, InputIterator last, typename enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
+	void assign(InputIterator first, InputIterator last, typename enable_if<ft::is_integral<InputIterator>::value>::type* = 0)
 	{
 		this->clear();
 		this->insert(this->_end, first, last);
@@ -306,14 +306,14 @@ class vector
 	}
 
 	template <class InputIterator>
-	void insert(iterator position, InputIterator first, InputIterator last, typename enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
+	void insert(iterator position, InputIterator first, InputIterator last, typename enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
 	{
 		// find length of range to insert
 		InputIterator	countIt = first;
 		size_type		distance = 0;
 		pointer			newStart = NULL;
 		pointer			newEnd = NULL;
-		pointer			copy = NULL;
+		pointer			copy;
 		while (countIt++ != last)
 			distance++;
 		if (this->size() + distance > this->_capacity)
@@ -358,7 +358,7 @@ class vector
 		}
 		else
 		{
-			difference_type distancePos = this->_end - position;	// distance to the value pointed to by position
+			size_type distancePos = this->end() - position;	// distance to the value pointed to by position
 			copy = this->_end - distancePos;				// start point of insertion of values
 			if (this->_start != this->_end)
 			{
@@ -438,15 +438,15 @@ class vector
 		unsigned int	tmpcapacity		= this->_capacity;
 		allocator_type	tmpallocator	= this->_allocator;
 
-		this->_start		= rhs._start; 
-		this->_end			= rhs._end;
-		this->_capacity		= rhs._capacity;
-		this->_allocator	= rhs._allocator;
+		this->_start		= other._start;
+		this->_end			= other._end;
+		this->_capacity		= other._capacity;
+		this->_allocator	= other._allocator;
 
-		rhs._start		= tmpstart;
-		rhs._end		= tmpend;
-		rhs._capacity	= tmpcapacity;
-		rhs._allocator	= tmpallocator;
+		other._start		= tmpstart;
+		other._end		= tmpend;
+		other._capacity	= tmpcapacity;
+		other._allocator	= tmpallocator;
 	}
 
 	private:
@@ -455,6 +455,24 @@ class vector
 		unsigned int	_capacity;
 		allocator_type	_allocator;
 };
+
+template <class T, class Alloc>
+bool operator==(const vector <T, Alloc> &lhs, const vector <T, Alloc> &rhs)
+{
+	if (lhs.size() != rhs.size())
+		return (false);
+	else
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+}
+
+namespace std
+{
+	template <class T, class Alloc>
+	void swap (ft::vector<T,Alloc> &lhs, ft::vector<T,Alloc> &rhs)
+	{
+		lhs.swap(rhs);
+	}
+}
 
 } // from namespace
 

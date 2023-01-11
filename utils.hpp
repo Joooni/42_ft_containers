@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 13:15:39 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/10 18:16:20 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/11 08:59:44 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ struct enable_if<true, T> { typedef T type;};
 template <class T, T val>
 class integral_constant {
 public:
-	const T value = val;
+	static const T value = val;
 	typedef T value_type;
 	typedef integral_constant<T, val> type;
 	operator value_type() {return (this->value);}
@@ -71,15 +71,47 @@ bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPredicate p 
 {
 	for (; first1 != last1; ++first1, ++first2)
 	{
-		if (!p(*first1, *first2)
+		if (!p(*first1, *first2))
 			return (false);
 	}
-	return (true);	
+	return (true);
+}
+/*
+Lexicographical comparison is an operation with the following properties:
+ * Two ranges are compared element by element.
+ * The first mismatching element defines which range is lexicographically less or greater than the other.
+ * If one range is a prefix of another, the shorter range is lexicographically less than the other.
+ * If two ranges have equivalent elements and are of the same length, then the ranges are lexicographically equal.
+ * An empty range is lexicographically less than any non-empty range.
+ * Two empty ranges are lexicographically equal.
+*/
+template<class InputIt1, class InputIt2>
+bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2)
+{
+	for (; (first1 != last1) && (first2 != last2); ++first1, (void) ++first2)
+	{
+		if (*first1 < *first2)
+			return true;
+		if (*first2 < *first1)
+			return false;
+	}
+	return((first1 == last1) && (first2 != last2));
+}
+
+template<class InputIt1, class InputIt2, class Compare>
+bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, Compare comp)
+{
+	for (; (first1 != last1) && (first2 != last2); ++first1, (void) ++first2)
+	{
+		if (comp(*first1, *first2))
+			return true;
+		if (comp(*first2, *first1))
+			return false;
+	}
+	return (first1 == last1) && (first2 != last2);
 }
 /*
 	here goes
-	equal
-	lexicographical_compare
 	pair
 	make_pair
 */
