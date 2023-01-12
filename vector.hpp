@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/11 14:53:26 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/12 12:00:47 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ class vector
 	}
 
 	template <class InputIterator>
-	void assign(InputIterator first, InputIterator last, typename enable_if<ft::is_integral<InputIterator>::value>::type* = 0)
+	void assign(InputIterator first, InputIterator last, typename enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
 	{
 		this->clear();
 		this->insert(this->_end, first, last);
@@ -265,8 +265,7 @@ class vector
 			while (first != last)
 			{
 				this->_allocator.construct(this->_end++, *first);
-				this->_allocator.destroy(first);
-				++first;
+				this->_allocator.destroy(first++);
 			}
 			this->_allocator.deallocate(first - this->size(), this->_capacity);
 			this->_capacity = newCapacity;
@@ -379,7 +378,7 @@ class vector
 
 	iterator erase(iterator pos)
 	{
-		return (this->_erase(pos, pos + 1));
+		return (this->erase(pos, pos + 1));
 	}
 
 	iterator erase(iterator first, iterator last)
@@ -429,6 +428,7 @@ class vector
 			else
 				this->reserve(this->_capacity * 2);
 		}
+		std::cout << "yeet" << std::endl;
 		if (this->size() < count)
 			for (size_type i = this->size(); i < count; i++)
 				this->_allocator.construct(this->_end++, value);
@@ -471,14 +471,45 @@ bool operator==(const vector <T, Alloc> &lhs, const vector <T, Alloc> &rhs)
 		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 }
 
+template< class T, class Alloc >
+bool operator!=( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs )
+{
+	return (!(lhs == rhs));
+}
+
+template <class T, class Alloc>
+bool operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+{
+	return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+}
+
+template<class T, class Alloc>
+bool operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+{
+	return (!(lhs < rhs));
+}
+
+template<class T, class Alloc>
+bool operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+{
+	return (rhs < lhs);
+}
+
+template<class T, class Alloc>
+bool operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+{
+	return (!(rhs < lhs));
+}
+
 namespace std
 {
 	template <class T, class Alloc>
-	void swap (ft::vector<T,Alloc> &lhs, ft::vector<T,Alloc> &rhs)
+	void swap(ft::vector<T,Alloc> &lhs, ft::vector<T,Alloc> &rhs)
 	{
 		lhs.swap(rhs);
 	}
 }
+
 
 } // from namespace
 
