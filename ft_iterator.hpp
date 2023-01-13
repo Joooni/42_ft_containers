@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 15:15:34 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/12 11:09:20 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/13 11:24:01 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,12 @@ class reverse_iterator
 		iterator_type _current;
 
 	public:
-		// Constructors
+
+		//-*-*-*-*-*-*-*-*-*-//
+		//    Constructors   //
+		//    Destructors    //
+		//-*-*-*-*-*-*-*-*-*-//
+
 		reverse_iterator(): _current() {}
 		explicit reverse_iterator(iterator_type it): _current(it) {}
 		template <class T>

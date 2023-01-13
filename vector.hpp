@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/12 12:00:47 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/12 15:30:20 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,7 +260,7 @@ class vector
 		{
 			pointer	first = this->_start;
 			pointer	last = this->_end;
-			this->_allocator.allocate(newCapacity);
+			this->_start = this->_allocator.allocate(newCapacity);
 			this->_end = this->_start;
 			while (first != last)
 			{
@@ -393,7 +393,7 @@ class vector
 		std::copy(ptrFirst, this->_end, first.base());
 		// cleanup for left over stuff
 		// delete elements starting at end that are moved forward and decrement end to point to the actual end again
-		for (difference_type i = 1; i >= distance; i++)
+		for (difference_type i = 1; i <= distance; i++)
 		{
 			this->_allocator.destroy(this->_end - 1);
 			this->_end--;
@@ -428,7 +428,6 @@ class vector
 			else
 				this->reserve(this->_capacity * 2);
 		}
-		std::cout << "yeet" << std::endl;
 		if (this->size() < count)
 			for (size_type i = this->size(); i < count; i++)
 				this->_allocator.construct(this->_end++, value);
