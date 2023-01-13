@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/13 11:28:35 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/13 15:54:51 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,15 @@ class RBT
 		typedef typename allocator_type::const_pointer				const_pointer;
 		typedef typename ft::RBT_iterator<node, tree_type>			iterator;
 		typedef typename ft::const_RBT_iterator<node, tree_type>	const_iterator;
+
+		bool		empty() const
+		{
+			return (_root == NULL);
+		}
+		iterator	max()
+		{
+			return ()
+		}
 
 
 	private:

@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:40 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/13 13:26:20 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/13 16:52:35 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ class RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 
 		RBT_iterator &operator++()
 		{
+			T *temp = this->_current;
 
 		}
 
