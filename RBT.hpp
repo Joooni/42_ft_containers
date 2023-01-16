@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/13 15:54:51 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/16 08:29:18 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ template<typename T>
 struct Node
 {
 	public:
+		typedef typename T value_type;
 		T		*content;
 		Node	*parent;
 		Node	*left_child;
