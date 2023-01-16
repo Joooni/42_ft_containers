@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/16 14:43:50 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/16 15:31:19 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,7 +293,7 @@ class RBT
 				temp->right_child->parent = node;
 			if (!node->parent)
 				this->_root = temp;
-			else if (is_left_son(node))
+			else if (is_right_son(node))
 				node->parent->lc = temp;
 			else
 				node->parent->rc = temp;
