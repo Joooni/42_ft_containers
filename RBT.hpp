@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/16 12:26:56 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/16 14:43:50 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,13 +260,52 @@ class RBT
 			return (false);
 		}
 
-		node_pointer	sibling(node_pointer node)
+		node_pointer sibling(node_pointer node)
 		{
 			if (node == NULL)
 				return (NULL);
 			if (node->parent == NULL)
 				return (NULL);
 			return (is_left_son(node) ? node->parent->right : node->parent->left);
+		}
+
+		void rotate_left(node_pointer node)
+		{
+			node_pointer temp = node->right_child;
+			node->right_child = temp->left_child;
+			if (temp->left_child)
+				temp->left_child->parent = node;
+			if (!node->parent)
+				this->_root = temp;
+			else if (is_left_son(node))
+				node->parent->lc = temp;
+			else
+				node->parent->rc = temp;
+			temp->left_child = node;
+			node->parent = temp;
+		}
+
+		void rotate_right(node_pointer node)
+		{
+			node_pointer temp = node->left_child;
+			node->left_child = temp->right_child;
+			if (temp->right_child)
+				temp->right_child->parent = node;
+			if (!node->parent)
+				this->_root = temp;
+			else if (is_left_son(node))
+				node->parent->lc = temp;
+			else
+				node->parent->rc = temp;
+			temp->right_child = node;
+			node->parent = temp;
+		}
+
+		void recolor(node_pointer node)
+		{
+			if (!node)
+				return ;
+			node->color = !node->color;
 		}
 
 	private:
