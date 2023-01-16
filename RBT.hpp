@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/16 08:29:18 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/16 12:26:56 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,15 +71,203 @@ class RBT
 		typedef typename ft::RBT_iterator<node, tree_type>			iterator;
 		typedef typename ft::const_RBT_iterator<node, tree_type>	const_iterator;
 
-		bool		empty() const
+
+		RBT(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
 		{
-			return (_root == NULL);
-		}
-		iterator	max()
-		{
-			return ()
+			this->_compare = comp;
+			this->_allocator = alloc;
+			this->_size = 0;
+
+			// make empty end
+			this->_end = this->_nodeAlloc.allocate(1);
+			this->_end->_content= this->_allocator.allocate(1);
+			this->_allocator.construct(this->_end->content);
+			this->_end->color.BLACK;
+			this->_end->parent = NULL;
+			this->_end->left_child = NULL;
+			this->_end->right_child = NULL;
+
+			// make empty reverse end
+			this->_rend = this->_nodeAlloc.allocate(1);
+			this->_rend->_content= this->_allocator.allocate(1);
+			this->_allocator.construct(this->_rend->content);
+			this->_rend->color.BLACK;
+			this->_rend->parent = NULL;
+			this->_rend->left_child = NULL;
+			this->_rend->right_child = NULL;
+
+			this->_root = this->_end;
 		}
 
+		RBT(const RBT &rhs)
+		{
+			*this = rhs;
+		}
+
+		~RBT()
+		{
+
+		}
+
+		RBT &operator=(const RBT &rhs)
+		{
+			this->clear();
+			this->_compare = rhs.getCompare();
+			this->_allocator = rhs.getAllocator();
+			this->_size = rhs.size();
+			if (rhs.getRoot() != rhs.getEnd())
+			{
+				this->_root = this->_nodeAlloc.allocate(1);
+				this->_root->parent = NULL;
+				this->_root->left_child = NULL;
+				this->_root->right_child = NULL;
+				this->_root->color = BLACK;
+				this->_root->content = this->_allocator.allocate(1);
+				this->_allocator.construct(this->_root->content, *(rhs.getRoot()->content));
+				this->copySubtree(this->_root, rhs.getRoot());
+			}
+			this->_end->parent = this->max(this->_root);
+			this->_rend->parent = this->min(this->_root);
+		}
+
+		// copy the subtrees starting at a specified nodeSrc to the node located at nodeDest
+		// checks for left and right childen and if they exist, allocates and sets them to the correct values
+		// then, calls itself on the newly created child
+		void copySubTree(node_pointer nodeDest, node_pointer nodeSrc)
+		{
+			if (nodeSrc->left_child)
+			{
+				nodeDest->left_child = this->_nodeAlloc.allocate(1);
+				nodeDest->left_child->parent = nodeDest;
+				nodeDest->left_child->left_child = NULL;
+				nodeDest->left_child->right_child = NULL;
+				nodeDest->left_child->color = nodeSrc->left_child->color;
+				nodeDest->left_child->content = this->_allocator.allocate(1);
+				this->_allocator.construct(nodeDest->left_child->content, *(nodeSrc->left_child->content));
+				copySubtree(nodeDest->left_child, nodeSrc->left_child);
+			}
+			if (nodeSrc->right_child)
+			{
+				nodeDest->right_child = this->_nodeAlloc.allocate(1);
+				nodeDest->right_child->parent = nodeDest;
+				nodeDest->right_child->left_child = NULL;
+				nodeDest->right_child->right_child = NULL;
+				nodeDest->right_child->color = nodeSrc->right_child->color;
+				nodeDest->right_child->content = this->_allocator.allocate(1);
+				this->_allocator.construct(nodeDest->right_child->content, *(nodeSrc->right_child->content));
+				copySubtree(nodeDest->right_child, nodeSrc->right_child);
+			}
+		}
+
+		node_pointer getRoot() const
+		{
+			return (this->_root);
+		}
+
+		node_pointer getEnd() const
+		{
+			return (this->_end);
+		}
+
+		node_pointer getRend() const
+		{
+			return (this->_rend);
+		}
+
+		allocator_type getAllocator() const
+		{
+			return (this->_allocator);
+		}
+
+		key_compare getCompare() const
+		{
+			return (this->_compare);
+		}
+
+		size_type size() const
+		{
+			return (this->_size);
+		}
+
+		size_type max_size() const
+		{
+			return (this->_allocator.max_size());
+		}
+
+		node_pointer max(node_pointer node) const
+		{
+			node_pointer temp;
+			temp = node;
+			if (!this->_root)
+				return (this->_end);
+			while (temp->right_child)
+				temp = temp->right_child;
+			return (temp);
+		}
+
+		node_pointer min(node_pointer node) const
+		{
+			node_pointer temp;
+			temp = node;
+			if (!this->_root)
+				return (this->_end);
+			while (temp->left_child)
+				temp = temp->left_child;
+			return (temp);
+		}
+
+		iterator begin()
+		{
+			return (iterator(this->min(this->_root), this->_end, this->_rend));
+		}
+
+		iterator end()
+		{
+			return (iterator(this->_end, this->_end, this->_rend));
+		}
+
+		iterator rend()
+		{
+			return (iterator(this->_rend, this->_end, this->_rend));
+		}
+
+		const_iterator begin()
+		{
+			return (const_iterator(this->min(this->_root), this->_end, this->_rend));
+		}
+
+		const_iterator end()
+		{
+			return (const_iterator(this->_end, this->_end, this->_rend));
+		}
+
+		const_iterator rend()
+		{
+			return (const_iterator(this->_rend, this->_end, this->_rend));
+		}
+
+		bool is_left_son(node_pointer node) const
+		{
+			if (node->parent && node->parent->left == node)
+				return (true);
+			return (false);
+		}
+
+		bool is_right_son(node_pointer node) const
+		{
+			if (node->parent && node->parent->right == node)
+				return (true);
+			return (false);
+		}
+
+		node_pointer	sibling(node_pointer node)
+		{
+			if (node == NULL)
+				return (NULL);
+			if (node->parent == NULL)
+				return (NULL);
+			return (is_left_son(node) ? node->parent->right : node->parent->left);
+		}
 
 	private:
 		node_pointer			_root;
