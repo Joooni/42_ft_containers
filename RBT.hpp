@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/16 15:31:19 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/18 08:46:40 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,8 @@ class RBT
 				copySubtree(nodeDest->right_child, nodeSrc->right_child);
 			}
 		}
+
+		
 
 		node_pointer getRoot() const
 		{
