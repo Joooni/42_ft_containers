@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/18 08:46:40 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/19 12:10:57 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,18 @@ class RBT
 			}
 		}
 
-		
+		node_pointer insert(value_type val)
+		{
+			// first check if node already exists
+			// still have to do that, probably with find?
+			node_pointer new_node = this->_nodeAlloc.allocate(1);
+			new_node->content = this->_allocator.allocate(1);
+			new_node->parent = NULL;
+			new_node->left_child = NULL;
+			new_node->right_child = NULL;
+
+		}
+
 
 		node_pointer getRoot() const
 		{
@@ -301,6 +312,40 @@ class RBT
 				node->parent->rc = temp;
 			temp->right_child = node;
 			node->parent = temp;
+		}
+
+		void BST_insertion(node_pointer node)
+		{
+			node_pointer current = this->_root;
+			while(current)
+			{
+				// compare node key and currently looked at key according to comparsion function
+				if (this->_compare(get_key(node->content), (current->content)))
+				{
+					// if there is a left child, take this as new currently looked at key and loop
+					if (current->left_child)
+						current = current.left_child;
+					else
+					{
+						// set pointers in the nodes accordingly
+						current->left_child = node;
+						node->parent = current;
+						return ;
+					}
+				}
+				else
+				{
+					// same logic as above
+					if (current->right_child)
+						current = current.right_child;
+					else
+					{
+						current->right_child = node;
+						node->parent = current;
+						return ;
+					}
+				}
+			}
 		}
 
 		void recolor(node_pointer node)

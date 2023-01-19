@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 13:15:39 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/11 10:37:15 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/19 11:44:50 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,28 @@ public:
 	typedef T value_type;
 	typedef integral_constant<T, val> type;
 	operator value_type() {return (this->value);}
+};
+
+template <class T1, class T2>
+class pair
+{
+	public:
+		typedef T1 first_type;
+		typedef T2 second_type;
+
+		first_type	first;
+		second_type	second;
+
+		pair(): first(), second() {};
+		template <class P1, class P2>
+		pair(const pair <P1, P2> &pair): first(pair.first), second(pair.second) {};
+		pair(const first_type &first, const second_type &second): first(first), second(second) {};
+		pair &operator=(const pair &rhs)
+		{
+			this->first = rhs.first;
+			this->second = rhs.second;
+			return (*this);
+		}
 };
 
 typedef	integral_constant <bool, true>	true_type;
@@ -114,6 +136,24 @@ bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, I
 			return false;
 	}
 	return (first1 == last1) && (first2 != last2);
+}
+
+template <class T1, class T2>
+pair<T1,T2> make_pair(T1 x, T2 y)
+{
+	return (pair<T1,T2>(x,y));
+}
+
+template<typename T>
+T get_key(T *key)
+{
+	return (*key);
+}
+
+template<typename key, typename value>
+key get_key(ft::pair<key, value> *pair)
+{
+	return (pair->first);
 }
 /*
 	here goes

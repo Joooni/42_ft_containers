@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/12 15:30:20 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/19 12:42:43 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <iostream>
 #include <stdexcept>
 #include "ft_random_access_iterator.hpp"
+#include "ft_reverse_iterator.hpp"
 #include <memory> // for std::allocator
 #include <vector> // for looking up stuff
 #include "utils.hpp"
