@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/19 16:27:41 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/23 11:17:22 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -385,7 +385,6 @@ class vector
 	iterator erase(iterator first, iterator last)
 	{
 		difference_type distance = last - first;
-		std::cout << "last - first: " << distance << std::endl;
 		pointer	ptrFirst = first.base();
 		pointer	ptrLast = ptrFirst + distance;
 		// delete values between first and (not including) last
@@ -400,7 +399,6 @@ class vector
 			this->_allocator.destroy(this->_end - 1);
 			this->_end--;
 		}
-		std::cout << "end - start after erase:   " << this->_end - this->_start << std::endl;
 		return (last - distance);
 	}
 

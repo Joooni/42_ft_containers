@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/19 12:10:57 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/23 12:40:58 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,21 @@ class RBT
 			}
 		}
 
+		/**
+		 * to insert a node into a Red Black Tree, 4 cases are possible
+		 * Case 1: the tree is empty at the beginning
+		 * 	in that case, make the new element the root element and thus BLACK
+		 * Case 2: if the tree is not empty, create a new leaf in RED
+		 * 	if the parent of that new node is BLACK, exit the function
+		 * Case 3: if the parent of that new node is RED, check for its siblings
+		 * 	3.1: sibling is BLACK or NULL
+		 * 		find the suitable rotation & relocoring
+		 * 		LL/RR rotation: recolor grandparent and parent
+		 * 		LR/RL rotation: recolor grandparent and child
+		 * 	3.2: sibling is RED
+		 * 		recolor BOTH siblings & check if the grandparent is root
+		 * 		if not: recolor it and recheck it
+		*/
 		node_pointer insert(value_type val)
 		{
 			// first check if node already exists
@@ -168,7 +183,55 @@ class RBT
 			new_node->parent = NULL;
 			new_node->left_child = NULL;
 			new_node->right_child = NULL;
+			// Case 1
+			if (this->_root == this->_end)
+			{
+				new_node->color = BLACK;
+				new_node->parent = NULL;
+				this->_root = new_node;
+				this->_end->parent = new_node;
+				this->_rend->parent = new_node;
+				return (new_node);
+			}
+			// Case 2
+			new_node->color = RED;
+			BST_insertion(new_node);
+			node_pointer	check_node = new_node;
+			// Cases 3
+			while (check_node->parent && check_node->parent->color == RED)
+			{
+				// Case 3.2
+				node_pointer grandparent = check_node->parent->parent;
+				if (this->sibling(check_node->parent)->color == RED)
+				{
+					recolor(check_node->parent);
+					recolor(this->sibling(check_node->parent));
+					if (grandparent != this->_root)
+					{
+						recolor(grandparent);
+					}
+					check_node = grandparent;
+				}
+				else
+				{
+					// LR or RR
+					if (check_node->parent == grandparent->left_child)
+					{
+						if (check_node == check_node->parent->right_child)
+							rotate_left()
+					}
+				}
+			}
+			this->_end->parent = this->max(this->_root);
+			this->_rend->parent = this->min(this->_root);
+			return (check_node);
+		}
 
+		void recolor(node_pointer node)
+		{
+			if (!node)
+				return ;
+			node->color = !node->color;
 		}
 
 
@@ -282,36 +345,38 @@ class RBT
 			return (is_left_son(node) ? node->parent->right : node->parent->left);
 		}
 
+		// passed node is the root of the subtree to be rotated and thus the initial parent
+		// pivot is the child that takes the root node's place
 		void rotate_left(node_pointer node)
 		{
-			node_pointer temp = node->right_child;
-			node->right_child = temp->left_child;
-			if (temp->left_child)
-				temp->left_child->parent = node;
+			node_pointer pivot = node->right_child;
+			node->right_child = pivot->left_child;
+			if (pivot->left_child)
+				pivot->left_child->parent = node;
 			if (!node->parent)
-				this->_root = temp;
+				this->_root = pivot;
 			else if (is_left_son(node))
-				node->parent->lc = temp;
+				node->parent->lc = pivot;
 			else
-				node->parent->rc = temp;
-			temp->left_child = node;
-			node->parent = temp;
+				node->parent->rc = pivot;
+			pivot->left_child = node;
+			node->parent = pivot;
 		}
 
 		void rotate_right(node_pointer node)
 		{
-			node_pointer temp = node->left_child;
-			node->left_child = temp->right_child;
-			if (temp->right_child)
-				temp->right_child->parent = node;
+			node_pointer pivtor = node->left_child;
+			node->left_child = pivtor->right_child;
+			if (pivtor->right_child)
+				pivtor->right_child->parent = node;
 			if (!node->parent)
-				this->_root = temp;
+				this->_root = pivtor;
 			else if (is_right_son(node))
-				node->parent->lc = temp;
+				node->parent->lc = pivtor;
 			else
-				node->parent->rc = temp;
-			temp->right_child = node;
-			node->parent = temp;
+				node->parent->rc = pivtor;
+			pivtor->right_child = node;
+			node->parent = pivtor;
 		}
 
 		void BST_insertion(node_pointer node)
