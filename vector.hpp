@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/23 11:17:22 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/23 13:50:53 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ class vector
 		while (first != last)
 			this->_allocator.construct(this->_end++, *(first++));
 	}
-
 	// copy constructor
 	vector(const vector &other) : _start(0), _end(0), _capacity(other.capacity())
 	{

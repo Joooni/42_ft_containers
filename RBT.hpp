@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/23 12:40:58 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/23 16:50:58 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,8 @@ class RBT
 			// still have to do that, probably with find?
 			node_pointer new_node = this->_nodeAlloc.allocate(1);
 			new_node->content = this->_allocator.allocate(1);
+			this->_allocator.construct(new_node->content, val);
+			this->_size++;
 			new_node->parent = NULL;
 			new_node->left_child = NULL;
 			new_node->right_child = NULL;
@@ -218,7 +220,26 @@ class RBT
 					if (check_node->parent == grandparent->left_child)
 					{
 						if (check_node == check_node->parent->right_child)
-							rotate_left()
+						{
+							check_node = check_node->parent;
+							rotate_left(check_node);
+
+						}
+						rotate_right(check_node->parent->parent);
+						recolor(check_node->parent);
+						recolor(check_node->parent->right_child);
+					}
+					// RL or LL
+					else
+					{
+						if (check_node == check_node->parent->left_child)
+						{
+							check_node = check_node->parent;
+							rotate_right(check_node);
+						}
+						rotate_left(check_node->parent->parent);
+						recolor(check_node->parent);
+						recolor(check_node->left_child);
 					}
 				}
 			}
