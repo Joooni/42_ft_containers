@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 13:15:39 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/19 11:44:50 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/24 11:46:45 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ template <> struct			is_integral<unsigned long long int> :	public true_type {};
 Two ranges are considered equal if they have the same number of elements and,
 for every iterator i in the range [first1,last1), *i equals *(first2 + (i - first1))
 */
-
 template< class InputIt1, class InputIt2 >
 bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2 )
 {
@@ -103,6 +102,7 @@ bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPredicate p 
 	}
 	return (true);
 }
+
 /*
 Lexicographical comparison is an operation with the following properties:
  * Two ranges are compared element by element.
@@ -155,11 +155,6 @@ key get_key(ft::pair<key, value> *pair)
 {
 	return (pair->first);
 }
-/*
-	here goes
-	pair
-	make_pair
-*/
 
 } // ft namespace
 

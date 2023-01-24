@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/23 16:50:58 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/24 16:19:20 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,8 +176,9 @@ class RBT
 		*/
 		node_pointer insert(value_type val)
 		{
-			// first check if node already exists
-			// still have to do that, probably with find?
+			node_pointer already_found = find_node(val);
+			if (already_found != this->_end)
+				return (already_found);
 			node_pointer new_node = this->_nodeAlloc.allocate(1);
 			new_node->content = this->_allocator.allocate(1);
 			this->_allocator.construct(new_node->content, val);
@@ -247,6 +248,97 @@ class RBT
 			this->_rend->parent = this->min(this->_root);
 			return (check_node);
 		}
+
+		/**
+		 * walk through the entire tree, starting at the root
+		 * and then compare current element with the key/value
+		 * to see if it is the node we were looking for
+		 * or in which subtree it is located
+		*/
+		template<typename Key>
+		node_pointer find_node(Key k) const
+		{
+			node_pointer find_node = this->_root;
+			if (find_node == this->_end)
+				return (this->_end);
+			while (find_node)
+			{
+				if (k == get_key(find_node->content))
+					return (find_node);
+				else if (this->_compare(k, get_key(find_node->content)))
+				{
+					if (find_node->left_child)
+						find_node = find_node->left_child;
+					else
+						return (this->_end);
+				}
+				else
+				{
+					if (find_node->right_child)
+						find_node = find_node->right_child;
+					else
+						return (this->_end);
+				}
+			}
+			return (this->_end);
+		}
+		
+		node_pointer find_node(value_type val) const
+		{
+			node_pointer find_node = this->_root;
+			if (find_node == this->_end)
+				return (this->_end);
+			while (find_node)
+			{
+				if (get_key(&val) == get_key(find_node->content))
+					return (find_node);
+				else if (this->_compare(get_key(&val, get_key(find_node->content)))
+				{
+					if (find_node->left_child)
+						find_node = find_node->left_child;
+					else
+						return (this->_end);
+				}
+				else
+				{
+					if (find_node->right_child)
+						find_node = find_node->right_child;
+					else
+						return (this->_end);
+				}
+			}
+			return (this->_end);
+		}
+
+
+		node_pointer predecessor(node_pointer node) const
+		{
+			if (node == this->_end)
+				return (this->max(this->_root));
+			if (node->left_child)
+				return (max(node->left_child));
+			while (!is_right_son(node))
+				node = node->parent;
+			return ((node->parent));
+		}
+
+		node_pointer successor(node_pointer node) const
+		{
+			if (node == this->max(this->_root))
+				return ((this->_end));
+			if (node->right_child)
+				return (min(node->right_child));
+			while (!is_left_son(node))
+				node = node->parent;
+			return ((node->parent));
+		}
+
+		
+		void erase(node_pointer node)
+		{
+			
+		}
+
 
 		void recolor(node_pointer node)
 		{
@@ -345,14 +437,14 @@ class RBT
 
 		bool is_left_son(node_pointer node) const
 		{
-			if (node->parent && node->parent->left == node)
+			if (node->parent && node->parent->left_child == node)
 				return (true);
 			return (false);
 		}
 
 		bool is_right_son(node_pointer node) const
 		{
-			if (node->parent && node->parent->right == node)
+			if (node->parent && node->parent->right_child == node)
 				return (true);
 			return (false);
 		}
@@ -363,7 +455,7 @@ class RBT
 				return (NULL);
 			if (node->parent == NULL)
 				return (NULL);
-			return (is_left_son(node) ? node->parent->right : node->parent->left);
+			return (is_left_son(node) ? node->parent->right_child : node->parent->left_child);
 		}
 
 		// passed node is the root of the subtree to be rotated and thus the initial parent
