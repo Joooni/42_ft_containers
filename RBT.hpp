@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/24 16:19:20 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/27 12:38:15 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,7 +282,7 @@ class RBT
 			}
 			return (this->_end);
 		}
-		
+
 		node_pointer find_node(value_type val) const
 		{
 			node_pointer find_node = this->_root;
@@ -292,7 +292,7 @@ class RBT
 			{
 				if (get_key(&val) == get_key(find_node->content))
 					return (find_node);
-				else if (this->_compare(get_key(&val, get_key(find_node->content)))
+				else if (this->_compare(get_key(&val), get_key(find_node->content)))
 				{
 					if (find_node->left_child)
 						find_node = find_node->left_child;
@@ -333,12 +333,89 @@ class RBT
 			return ((node->parent));
 		}
 
-		
+		/** similar to BST deletion, but with more specific cases
+		 * three base cases that might get more specific
+		 * 	Case 1: node has no children - just replace it with NIL node
+		 * 	Case 2: node has one child - replace node with its child
+		 * 	Case 3: node has two children - find nodes successor and have it take nodes position in the tree
+		 * 		in that case, the original subtrees of node become the subtrees of the new node
+
+
+		*/
 		void erase(node_pointer node)
 		{
-			
+			node_pointer moved_node = node;
+			node_pointer temp;
+			bool node_originalcolor = moved_node->color;
+			if (!node->left_child)
+			{
+				temp = node->right_child;
+				transplant(node, node->right_child);
+			}
+			else if (!node->right_child)
+			{
+				temp = node->left_child;
+				transplant(node, node->left_child);
+			}
+			else
+			{
+				moved_node = successor(node);
+				node_originalcolor = moved_node->color;
+				temp = moved_node->right_child;
+				if (moved_node == node)
+					temp->parent = moved_node;
+				else
+				{
+					transplant(moved_node, moved_node->right_child);
+					moved_node->right_child = temp->right_child;
+					moved_node->right_child->parent = moved_node;
+				}
+				transplant(node, moved_node);
+				moved_node->left_child = temp->left_child;
+				moved_node->left_child->parent = moved_node;
+				moved_node->color = temp->color;
+			}
+			if (node_originalcolor == BLACK)
+				deleteFix(temp);
+		}
+		// subroutine to replace one subtree as a child of its parent with another subtree
+		void transplant(node_pointer node, node_pointer swap)
+		{
+			if (node == this->_root)
+				this->_root = swap;
+			else if (is_left_son(node))
+				node->parent->left_child = swap;
+			else
+				node->parent->right_child = swap;
+			swap->parent = node->parent;
 		}
 
+		void deleteFix(node_pointer node)
+		{
+			node_pointer sibling_node;
+			while (node != this->_root && node->color == BLACK)
+			{
+				if (is_left_son(node))
+				{
+					sibling_node = sibling(node);
+					// Case 1: node sibling is RED
+					// transform this into Cases 2, 3, or 4
+					// depending on their childrens' colors
+					if (sibling_node->color == RED)
+					{
+						sibling_node->color = BLACK;
+						node->parent->color = RED;
+						rotate_left(node->parent);
+						sibling_node = sibling(node);
+					}
+					if
+				}
+				else
+				{
+
+				}
+			}
+		}
 
 		void recolor(node_pointer node)
 		{

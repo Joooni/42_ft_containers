@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/23 13:50:53 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/25 08:24:47 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -440,7 +440,7 @@ class vector
 	{
 		pointer			tmpstart		= this->_start;
 		pointer			tmpend			= this->_end;
-		unsigned int	tmpcapacity		= this->_capacity;
+		size_type		tmpcapacity		= this->_capacity;
 		allocator_type	tmpallocator	= this->_allocator;
 
 		this->_start		= other._start;
@@ -457,7 +457,7 @@ class vector
 	private:
 		pointer			_start;
 		pointer			_end;
-		unsigned int	_capacity;
+		size_type		_capacity;
 		allocator_type	_allocator;
 };
 
@@ -485,7 +485,7 @@ bool operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 template<class T, class Alloc>
 bool operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 {
-	return (!(lhs < rhs));
+	return (!(rhs < lhs));
 }
 
 template<class T, class Alloc>
@@ -497,9 +497,10 @@ bool operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 template<class T, class Alloc>
 bool operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 {
-	return (!(rhs < lhs));
+	return (!(lhs < rhs));
 }
 
+} // from namespace
 namespace std
 {
 	template <class T, class Alloc>
@@ -510,6 +511,6 @@ namespace std
 }
 
 
-} // from namespace
+
 
 #endif
