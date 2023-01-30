@@ -6,12 +6,14 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 11:19:49 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/19 11:20:41 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/30 10:21:57 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_REVERSE_ITERATOR_HPP
 # define FT_REVERSE_ITERATOR_HPP
+
+#include "ft_iterator.hpp"
 
 namespace ft
 {

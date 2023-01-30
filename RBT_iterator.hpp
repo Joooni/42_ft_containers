@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:40 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/19 11:21:10 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/30 10:39:56 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ template<typename T, typename Tree>
 class RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 {
 	public:
-		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::iterator_category	iterator_category;
 		typedef typename Tree::value_type 															value_type;
+		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::iterator_category	iterator_category;
 		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::difference_type		difference_type;
 		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::reference			reference;
 		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::pointer				pointer;
@@ -121,7 +121,7 @@ class RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 			}
 			else
 			{
-				while (temp->parent && temp = temp->parent->right_child)
+				while (temp->parent && temp == temp->parent->right_child)
 					temp = temp->parent;
 				if (temp->parent)
 					temp = temp->parent;
@@ -132,7 +132,7 @@ class RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 			return (*this);
 		}
 
-		RBT_iteraotr operator--(int)
+		RBT_iterator operator--(int)
 		{
 			RBT_iterator temp = *this;
 			--(*this);
@@ -172,17 +172,14 @@ class RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 		{
 			return (this->_current->content);
 		}
-
-
-
-}
+};
 
 template<typename T, typename Tree>
 class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 {
 	public:
-		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::iterator_category	iterator_category;
 		typedef typename Tree::value_type 															value_type;
+		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::iterator_category	iterator_category;
 		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::difference_type		difference_type;
 		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::reference			reference;
 		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::pointer				pointer;
@@ -277,7 +274,7 @@ class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 			}
 			else
 			{
-				while (temp->parent && temp = temp->parent->right_child)
+				while (temp->parent && temp == temp->parent->right_child)
 					temp = temp->parent;
 				if (temp->parent)
 					temp = temp->parent;
@@ -288,7 +285,7 @@ class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 			return (*this);
 		}
 
-		RBT_iteraotr operator--(int)
+		const_RBT_iterator operator--(int)
 		{
 			const_RBT_iterator temp = *this;
 			--(*this);
@@ -328,10 +325,7 @@ class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 		{
 			return (this->_current->content);
 		}
-
-
-
-}
+};
 
 } // namespace ft
 

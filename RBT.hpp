@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/27 12:38:15 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/01/30 10:59:05 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,10 @@
 namespace ft
 {
 
-template<typename T>
+template< typename T >
 struct Node
 {
 	public:
-		typedef typename T value_type;
 		T		*content;
 		Node	*parent;
 		Node	*left_child;
@@ -36,19 +35,19 @@ struct Node
 		bool	color;
 };
 
-template<typename T>
+template< typename T >
 struct ConstNode
 {
 	public:
 		ConstNode(Node<T> node) : content(node->content), parent(node->parent), left_child(node->left_child), right_child(node->right_child), color(node->color) {}
-		T		*content;
-		Node	*parent;
-		Node	*left_child;
-		Node	*right_child;
-		bool	color;
+		const T		*content;
+		ConstNode	*parent;
+		ConstNode	*left_child;
+		ConstNode	*right_child;
+		bool		color;
 };
 
-template<typename T, typename Compare, typename Alloc = std::allocator<T>>
+template< typename T, typename Compare, typename Alloc = std::allocator<T> >
 class RBT
 {
 	public:
@@ -80,18 +79,18 @@ class RBT
 
 			// make empty end
 			this->_end = this->_nodeAlloc.allocate(1);
-			this->_end->_content= this->_allocator.allocate(1);
+			this->_end->content= this->_allocator.allocate(1);
 			this->_allocator.construct(this->_end->content);
-			this->_end->color.BLACK;
+			this->_end->color = BLACK;
 			this->_end->parent = NULL;
 			this->_end->left_child = NULL;
 			this->_end->right_child = NULL;
 
 			// make empty reverse end
 			this->_rend = this->_nodeAlloc.allocate(1);
-			this->_rend->_content= this->_allocator.allocate(1);
+			this->_rend->content= this->_allocator.allocate(1);
 			this->_allocator.construct(this->_rend->content);
-			this->_rend->color.BLACK;
+			this->_rend->color = BLACK;
 			this->_rend->parent = NULL;
 			this->_rend->left_child = NULL;
 			this->_rend->right_child = NULL;
@@ -399,7 +398,9 @@ class RBT
 				{
 					sibling_node = sibling(node);
 					// Case 1: node sibling is RED
-					// transform this into Cases 2, 3, or 4
+					// switch colors of sibling and parent
+					// and perform left rotation,
+					// transforming this into Cases 2, 3, or 4
 					// depending on their childrens' colors
 					if (sibling_node->color == RED)
 					{
@@ -408,22 +409,65 @@ class RBT
 						rotate_left(node->parent);
 						sibling_node = sibling(node);
 					}
-					if
+					// Case 2: both sibling of node AND childen of sibling are black
+					if (sibling_node->left_child->color == BLACK && sibling_node->right_child->color == BLACK)
+					{
+						sibling_node->color = RED;
+						node = node->parent;
+					}
+					else
+					{
+						// Case 3: only right child is black
+						// transforms into Case 4
+						if (sibling_node->right_child->color == BLACK)
+						{
+							sibling_node->left_child->color = BLACK;
+							sibling_node->color = RED;
+							rotate_right(sibling_node);
+							sibling_node = sibling(node);
+						}
+						// Case 4: right child is red
+						sibling_node->color = node->parent->color;
+						node->parent->color = BLACK;
+						sibling_node->right_child->color= BLACK;
+						rotate_left(node->parent);
+						node = this->_root;
+					}
 				}
-				else
+				else // same as before, just for the right subtree
 				{
-
+					sibling_node = sibling(node);
+					if (sibling_node->color == RED)
+					{
+						sibling_node->color = BLACK;
+						node->parent->color = RED;
+						rotate_right(node->parent);
+						sibling_node = sibling(node);
+					}
+					if (sibling_node->right_child->color == BLACK && sibling_node->left_child->color == BLACK)
+					{
+						sibling_node->color = RED;
+						node = node->parent;
+					}
+					else
+					{
+						if (sibling_node->left_child->color == BLACK)
+						{
+							sibling_node->right_child->color = BLACK;
+							sibling_node->color = RED;
+							rotate_left(sibling_node);
+							sibling_node = sibling(node);
+						}
+						sibling_node->color = node->parent->color;
+						node->parent->color = BLACK;
+						sibling_node->left_child->color= BLACK;
+						rotate_right(node->parent);
+						node = this->_root;
+					}
 				}
 			}
+			node->color = BLACK;
 		}
-
-		void recolor(node_pointer node)
-		{
-			if (!node)
-				return ;
-			node->color = !node->color;
-		}
-
 
 		node_pointer getRoot() const
 		{
@@ -497,17 +541,17 @@ class RBT
 			return (iterator(this->_rend, this->_end, this->_rend));
 		}
 
-		const_iterator begin()
+		const_iterator begin() const
 		{
 			return (const_iterator(this->min(this->_root), this->_end, this->_rend));
 		}
 
-		const_iterator end()
+		const_iterator end() const
 		{
 			return (const_iterator(this->_end, this->_end, this->_rend));
 		}
 
-		const_iterator rend()
+		const_iterator rend() const
 		{
 			return (const_iterator(this->_rend, this->_end, this->_rend));
 		}
@@ -546,27 +590,27 @@ class RBT
 			if (!node->parent)
 				this->_root = pivot;
 			else if (is_left_son(node))
-				node->parent->lc = pivot;
+				node->parent->left_child = pivot;
 			else
-				node->parent->rc = pivot;
+				node->parent->right_child = pivot;
 			pivot->left_child = node;
 			node->parent = pivot;
 		}
 
 		void rotate_right(node_pointer node)
 		{
-			node_pointer pivtor = node->left_child;
-			node->left_child = pivtor->right_child;
-			if (pivtor->right_child)
-				pivtor->right_child->parent = node;
+			node_pointer pivot = node->left_child;
+			node->left_child = pivot->right_child;
+			if (pivot->right_child)
+				pivot->right_child->parent = node;
 			if (!node->parent)
-				this->_root = pivtor;
+				this->_root = pivot;
 			else if (is_right_son(node))
-				node->parent->lc = pivtor;
+				node->parent->left_child = pivot;
 			else
-				node->parent->rc = pivtor;
-			pivtor->right_child = node;
-			node->parent = pivtor;
+				node->parent->right_child = pivot;
+			pivot->right_child = node;
+			node->parent = pivot;
 		}
 
 		void BST_insertion(node_pointer node)
@@ -579,7 +623,7 @@ class RBT
 				{
 					// if there is a left child, take this as new currently looked at key and loop
 					if (current->left_child)
-						current = current.left_child;
+						current = current->left_child;
 					else
 					{
 						// set pointers in the nodes accordingly
@@ -592,7 +636,7 @@ class RBT
 				{
 					// same logic as above
 					if (current->right_child)
-						current = current.right_child;
+						current = current->right_child;
 					else
 					{
 						current->right_child = node;
@@ -611,14 +655,14 @@ class RBT
 		}
 
 	private:
-		node_pointer			_root;
-		node_pointer			_end;
-		node_pointer			_rend;
-		allocator_type			_allocator;
-		std::allocator<Node<T>>	_nodeAlloc;
-		key_compare				_compare;
-		size_type				_size;
-}
+		node_pointer				_root;
+		node_pointer				_end;
+		node_pointer				_rend;
+		allocator_type				_allocator;
+		std::allocator< Node<T> >	_nodeAlloc;
+		key_compare					_compare;
+		size_type					_size;
+};
 
 } // namespace ft
 
