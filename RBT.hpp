@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/30 10:59:05 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/01 16:58:31 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "RBT_iterator.hpp"
 #include <memory>
 #include <iostream>
+#include <algorithm>
 
 #define RED		true
 #define BLACK	false
@@ -195,57 +196,54 @@ class RBT
 				this->_rend->parent = new_node;
 				return (new_node);
 			}
-			// Case 2
 			new_node->color = RED;
 			BST_insertion(new_node);
 			node_pointer	check_node = new_node;
-			// Cases 3
+			// Case 3 (2 immediately not fulfills while condition)
 			while (check_node->parent && check_node->parent->color == RED)
 			{
-				// Case 3.2
 				node_pointer grandparent = check_node->parent->parent;
-				if (this->sibling(check_node->parent)->color == RED)
+				// Case 3.2
+				if (grandparent->left_child && grandparent->right_child && grandparent->left_child->color == RED && grandparent->right_child->color == RED)
 				{
-					recolor(check_node->parent);
-					recolor(this->sibling(check_node->parent));
+					recolor(grandparent->left_child);
+					recolor(grandparent->right_child);
 					if (grandparent != this->_root)
-					{
 						recolor(grandparent);
-					}
 					check_node = grandparent;
 				}
 				else
 				{
-					// LR or RR
-					if (check_node->parent == grandparent->left_child)
-					{
-						if (check_node == check_node->parent->right_child)
-						{
-							check_node = check_node->parent;
-							rotate_left(check_node);
-
-						}
-						rotate_right(check_node->parent->parent);
-						recolor(check_node->parent);
-						recolor(check_node->parent->right_child);
-					}
 					// RL or LL
-					else
+					if (check_node->parent == grandparent->right_child)
 					{
 						if (check_node == check_node->parent->left_child)
 						{
 							check_node = check_node->parent;
 							rotate_right(check_node);
+
 						}
 						rotate_left(check_node->parent->parent);
 						recolor(check_node->parent);
-						recolor(check_node->left_child);
+						recolor(check_node->parent->left_child);
+					}
+					// LR or RR
+					else
+					{
+						if (check_node == check_node->parent->right_child)
+						{
+							check_node = check_node->parent;
+							rotate_left(check_node);
+						}
+						rotate_right(check_node->parent->parent);
+						recolor(check_node->parent);
+						recolor(check_node->parent->right_child);
 					}
 				}
 			}
-			this->_end->parent = this->max(this->_root);
-			this->_rend->parent = this->min(this->_root);
-			return (check_node);
+		this->_end->parent = this->max(this->_root);
+		this->_rend->parent = this->min(this->_root);
+		return (check_node);
 		}
 
 		/**
@@ -316,7 +314,7 @@ class RBT
 				return (this->max(this->_root));
 			if (node->left_child)
 				return (max(node->left_child));
-			while (!is_right_son(node))
+			while (is_left_son(node))
 				node = node->parent;
 			return ((node->parent));
 		}
@@ -327,7 +325,7 @@ class RBT
 				return ((this->_end));
 			if (node->right_child)
 				return (min(node->right_child));
-			while (!is_left_son(node))
+			while (is_right_son(node))
 				node = node->parent;
 			return ((node->parent));
 		}
@@ -558,14 +556,15 @@ class RBT
 
 		bool is_left_son(node_pointer node) const
 		{
-			if (node->parent && node->parent->left_child == node)
+			if (node->parent && node == node->parent->left_child)
 				return (true);
 			return (false);
 		}
 
 		bool is_right_son(node_pointer node) const
 		{
-			if (node->parent && node->parent->right_child == node)
+
+			if (node->parent && node == node->parent->right_child)
 				return (true);
 			return (false);
 		}
@@ -587,6 +586,7 @@ class RBT
 			node->right_child = pivot->left_child;
 			if (pivot->left_child)
 				pivot->left_child->parent = node;
+			pivot->parent = node->parent;
 			if (!node->parent)
 				this->_root = pivot;
 			else if (is_left_son(node))
@@ -603,6 +603,7 @@ class RBT
 			node->left_child = pivot->right_child;
 			if (pivot->right_child)
 				pivot->right_child->parent = node;
+			pivot->parent = node->parent;
 			if (!node->parent)
 				this->_root = pivot;
 			else if (is_right_son(node))
@@ -619,7 +620,7 @@ class RBT
 			while(current)
 			{
 				// compare node key and currently looked at key according to comparsion function
-				if (this->_compare(get_key(node->content), (current->content)))
+				if (this->_compare(get_key(node->content), get_key(current->content)))
 				{
 					// if there is a left child, take this as new currently looked at key and loop
 					if (current->left_child)
@@ -652,6 +653,45 @@ class RBT
 			if (!node)
 				return ;
 			node->color = !node->color;
+		}
+
+		void printTree(void)
+		{
+			int height = calculateHeight(this->_root);
+			std::cout << "Red-Black Tree(size: " << this->_size << ", height: " << height << ")\n";
+			node_pointer print_node = max(this->_root);
+			node_pointer min_node = min(this->_root);
+			std::string	print_str;
+			while(print_node != min_node)
+			{
+				print_str.clear();
+				print_str += std::string(distanceToRoot(print_node), '@');
+				print_str += "X";
+				std::cout << print_str << std::endl;
+				min_node = predecessor(min_node);
+			}
+		}
+
+		int calculateHeight(node_pointer node)
+		{
+			if (node == NULL)
+				return (-1);
+			return (std::max(calculateHeight(node->left_child), calculateHeight(node->right_child)) + 1);
+		}
+
+		int distanceToRoot(node_pointer node)
+		{
+			int i = 0;
+			node_pointer ptr = this->_root;
+			while (node != ptr)
+			{
+				i++;
+				if (*(ptr->content) > *(node->content))
+					ptr = ptr->left_child;
+				else
+					ptr = ptr->right_child;
+			}
+			return (i);
 		}
 
 	private:

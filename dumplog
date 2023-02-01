@@ -1,0 +1,30 @@
+1
+2
+  exit insert
+3
+  exit insert
+4
+  exit insert
+5
+  exit insert
+6
+  exit insert
+7
+  exit insert
+8
+  exit insert
+9
+  exit insert
+0x7ffdf6c05970root: 2
+0x7ffdf6c05930root left: 1
+0x7ffdf6c059f0root right: 4
+curr pointer: 0x7ffdf6c05970 pointing to: 2
+curr pointer: 0x7ffdf6c05930 pointing to: 1
+curr pointer: 0x7ffdf6c059f0 pointing to: 4
+curr pointer: 0x7ffdf6c059b0 pointing to: 3
+curr pointer: 0x7ffdf6c05a70 pointing to: 6
+curr pointer: 0x7ffdf6c05a30 pointing to: 5
+curr pointer: 0x7ffdf6c05af0 pointing to: 8
+curr pointer: 0x7ffdf6c05ab0 pointing to: 7
+curr pointer: 0x7ffdf6c05b30 pointing to: 9
+4
