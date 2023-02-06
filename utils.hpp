@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 13:15:39 by jsubel            #+#    #+#             */
-/*   Updated: 2023/01/24 11:46:45 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/06 09:40:42 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,12 +70,12 @@ template <> struct			is_integral<signed char> :				public true_type {};
 template <> struct			is_integral<short int> :				public true_type {};
 template <> struct			is_integral<int> :						public true_type {};
 template <> struct			is_integral<long int> :					public true_type {};
-template <> struct			is_integral<long long int> :			public true_type {};
+// template <> struct			is_integral<long long int> :			public true_type {};
 template <> struct			is_integral<unsigned char> :			public true_type {};
 template <> struct			is_integral<unsigned short int> :		public true_type {};
 template <> struct			is_integral<unsigned int> :				public true_type {};
 template <> struct			is_integral<unsigned long int> :		public true_type {};
-template <> struct			is_integral<unsigned long long int> :	public true_type {};
+// template <> struct			is_integral<unsigned long long int> :	public true_type {};
 
 /*
 Two ranges are considered equal if they have the same number of elements and,

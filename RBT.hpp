@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/01 16:58:31 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/06 15:57:26 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,16 @@
 #include <memory>
 #include <iostream>
 #include <algorithm>
+#include "colors.hpp"
 
 #define RED		true
 #define BLACK	false
+
+#include <sstream>
+
+#define SSTR( x ) static_cast< std::ostringstream & >( \
+        ( std::ostringstream() << std::dec << x ) ).str()
+
 
 namespace ft
 {
@@ -662,15 +669,55 @@ class RBT
 			node_pointer print_node = max(this->_root);
 			node_pointer min_node = min(this->_root);
 			std::string	print_str;
-			while(print_node != min_node)
+			int last_nbr_len = SSTR(*((predecessor(max(this->_root))->content))).length();
+			while (print_node != min_node)
 			{
 				print_str.clear();
-				print_str += std::string(distanceToRoot(print_node), '@');
-				print_str += "X";
+				if (print_node != this->_root)
+					print_str += std::string( last_nbr_len, ' ');
+					// print_str += " ";
+				for (int i = 1; i < distanceToRoot(print_node); i++)
+					print_str += std::string(last_nbr_len, ' ') + " ";
+				if (is_left_son(print_node))
+					print_str += "└";
+				else if (is_right_son(print_node))
+					print_str += "┌";
+				std::string color = COLOR_BOLD_RED;
+				if (print_node->color == BLACK)
+					color = COLOR_BRIGHT_DARK_GREY;
+				print_str += color + SSTR(*(print_node->content)) + END;
+				if (print_node->left_child && print_node->right_child)
+					print_str += "┤";
+				else if (print_node->left_child)
+					print_str += "┐";
+				else if (print_node->right_child)
+					print_str += "┘";
 				std::cout << print_str << std::endl;
-				min_node = predecessor(min_node);
+				last_nbr_len = SSTR(*(print_node->content)).length();
+				print_node = predecessor(print_node);
 			}
+			print_str.clear();
+			print_str += std::string( last_nbr_len, ' ');
+			for (int i = 1; i < distanceToRoot(print_node); i++)
+				print_str += std::string(last_nbr_len, ' ') + " ";
+			print_str += "└";
+			std::string color = COLOR_BOLD_RED;
+			if (print_node->color == BLACK)
+			color = COLOR_BRIGHT_DARK_GREY;
+			print_str += color + SSTR(*(print_node->content)) + END;
+			std::cout << print_str << std::endl;
+
 		}
+
+/*
+all the box characters
+┌──┬──┐
+│  │  │
+├──┼──┤
+│  │  │
+└──┴──┘
+*/
+
 
 		int calculateHeight(node_pointer node)
 		{

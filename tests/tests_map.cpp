@@ -4,7 +4,7 @@
 int main(void)
 {
 	ft::RBT<int, std::less<int> > RBTorsten;
-	for (int i = 1; i < 10; i++)
+	for (int i = 1; i < 25; i++)
 	{
 		std::cout << i << std::endl;
 		RBTorsten.insert(i);
