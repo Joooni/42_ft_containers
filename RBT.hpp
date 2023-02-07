@@ -6,78 +6,79 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/06 15:57:26 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/07 10:46:31 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RBT_HPP
-# define RBT_HPP
+#define RBT_HPP
 
 #include "utils.hpp"
 #include "RBT_iterator.hpp"
 #include <memory>
 #include <iostream>
 #include <algorithm>
+#include <cstddef>
+
 #include "colors.hpp"
 
-#define RED		true
-#define BLACK	false
+#define RED true
+#define BLACK false
 
 #include <sstream>
 
-#define SSTR( x ) static_cast< std::ostringstream & >( \
-        ( std::ostringstream() << std::dec << x ) ).str()
-
+#define SSTR(x) static_cast<std::ostringstream &>(           \
+					(std::ostringstream() << std::dec << x)) \
+					.str()
 
 namespace ft
 {
 
-template< typename T >
-struct Node
-{
+	template <typename T>
+	struct Node
+	{
 	public:
-		T		*content;
-		Node	*parent;
-		Node	*left_child;
-		Node	*right_child;
-		bool	color;
-};
+		T *content;
+		Node *parent;
+		Node *left_child;
+		Node *right_child;
+		bool color;
+	};
 
-template< typename T >
-struct ConstNode
-{
+	template <typename T>
+	struct ConstNode
+	{
 	public:
 		ConstNode(Node<T> node) : content(node->content), parent(node->parent), left_child(node->left_child), right_child(node->right_child), color(node->color) {}
-		const T		*content;
-		ConstNode	*parent;
-		ConstNode	*left_child;
-		ConstNode	*right_child;
-		bool		color;
-};
+		const T *content;
+		ConstNode *parent;
+		ConstNode *left_child;
+		ConstNode *right_child;
+		bool color;
+	};
 
-template< typename T, typename Compare, typename Alloc = std::allocator<T> >
-class RBT
-{
+	template <typename T, typename Compare, typename Alloc = std::allocator<T> >
+	class RBT
+	{
 	public:
-		typedef T				value_type;
-		typedef size_t			size_type;
-		typedef ptrdiff_t		difference_type;
-		typedef Compare			key_compare;
+		typedef T value_type;
+		typedef size_t size_type;
+		typedef ptrdiff_t difference_type;
+		typedef Compare key_compare;
 
-		typedef Alloc			allocator_type;
-		typedef Node<T>			node;
-		typedef Node<T>			*node_pointer;
-		typedef Node<const T>	*const_node_pointer;
+		typedef Alloc allocator_type;
+		typedef Node<T> node;
+		typedef Node<T> *node_pointer;
+		typedef Node<const T> *const_node_pointer;
 
-		typedef RBT<value_type, key_compare, allocator_type>		tree_type;
+		typedef RBT<value_type, key_compare, allocator_type> tree_type;
 
-		typedef typename allocator_type::reference					reference;
-		typedef typename allocator_type::const_reference			const_reference;
-		typedef typename allocator_type::pointer					pointer;
-		typedef typename allocator_type::const_pointer				const_pointer;
-		typedef typename ft::RBT_iterator<node, tree_type>			iterator;
-		typedef typename ft::const_RBT_iterator<node, tree_type>	const_iterator;
-
+		typedef typename allocator_type::reference reference;
+		typedef typename allocator_type::const_reference const_reference;
+		typedef typename allocator_type::pointer pointer;
+		typedef typename allocator_type::const_pointer const_pointer;
+		typedef typename ft::RBT_iterator<node, tree_type> iterator;
+		typedef typename ft::const_RBT_iterator<node, tree_type> const_iterator;
 
 		RBT(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
 		{
@@ -87,7 +88,7 @@ class RBT
 
 			// make empty end
 			this->_end = this->_nodeAlloc.allocate(1);
-			this->_end->content= this->_allocator.allocate(1);
+			this->_end->content = this->_allocator.allocate(1);
 			this->_allocator.construct(this->_end->content);
 			this->_end->color = BLACK;
 			this->_end->parent = NULL;
@@ -96,7 +97,7 @@ class RBT
 
 			// make empty reverse end
 			this->_rend = this->_nodeAlloc.allocate(1);
-			this->_rend->content= this->_allocator.allocate(1);
+			this->_rend->content = this->_allocator.allocate(1);
 			this->_allocator.construct(this->_rend->content);
 			this->_rend->color = BLACK;
 			this->_rend->parent = NULL;
@@ -113,7 +114,6 @@ class RBT
 
 		~RBT()
 		{
-
 		}
 
 		RBT &operator=(const RBT &rhs)
@@ -205,7 +205,7 @@ class RBT
 			}
 			new_node->color = RED;
 			BST_insertion(new_node);
-			node_pointer	check_node = new_node;
+			node_pointer check_node = new_node;
 			// Case 3 (2 immediately not fulfills while condition)
 			while (check_node->parent && check_node->parent->color == RED)
 			{
@@ -228,7 +228,6 @@ class RBT
 						{
 							check_node = check_node->parent;
 							rotate_right(check_node);
-
 						}
 						rotate_left(check_node->parent->parent);
 						recolor(check_node->parent);
@@ -248,9 +247,9 @@ class RBT
 					}
 				}
 			}
-		this->_end->parent = this->max(this->_root);
-		this->_rend->parent = this->min(this->_root);
-		return (check_node);
+			this->_end->parent = this->max(this->_root);
+			this->_rend->parent = this->min(this->_root);
+			return (check_node);
 		}
 
 		/**
@@ -259,7 +258,7 @@ class RBT
 		 * to see if it is the node we were looking for
 		 * or in which subtree it is located
 		*/
-		template<typename Key>
+		template <typename Key>
 		node_pointer find_node(Key k) const
 		{
 			node_pointer find_node = this->_root;
@@ -313,7 +312,6 @@ class RBT
 			}
 			return (this->_end);
 		}
-
 
 		node_pointer predecessor(node_pointer node) const
 		{
@@ -434,7 +432,7 @@ class RBT
 						// Case 4: right child is red
 						sibling_node->color = node->parent->color;
 						node->parent->color = BLACK;
-						sibling_node->right_child->color= BLACK;
+						sibling_node->right_child->color = BLACK;
 						rotate_left(node->parent);
 						node = this->_root;
 					}
@@ -465,7 +463,7 @@ class RBT
 						}
 						sibling_node->color = node->parent->color;
 						node->parent->color = BLACK;
-						sibling_node->left_child->color= BLACK;
+						sibling_node->left_child->color = BLACK;
 						rotate_right(node->parent);
 						node = this->_root;
 					}
@@ -624,7 +622,7 @@ class RBT
 		void BST_insertion(node_pointer node)
 		{
 			node_pointer current = this->_root;
-			while(current)
+			while (current)
 			{
 				// compare node key and currently looked at key according to comparsion function
 				if (this->_compare(get_key(node->content), get_key(current->content)))
@@ -637,7 +635,7 @@ class RBT
 						// set pointers in the nodes accordingly
 						current->left_child = node;
 						node->parent = current;
-						return ;
+						return;
 					}
 				}
 				else
@@ -649,7 +647,7 @@ class RBT
 					{
 						current->right_child = node;
 						node->parent = current;
-						return ;
+						return;
 					}
 				}
 			}
@@ -658,11 +656,86 @@ class RBT
 		void recolor(node_pointer node)
 		{
 			if (!node)
-				return ;
+				return;
 			node->color = !node->color;
 		}
 
+/* 		void printTree()
+		{
+			int i = 0;
+			while (i <= treeHeight(getroot()))
+			{
+				printlv(i);
+				i++;
+				cout << endl;
+			}
+		}
+
+		void printlv(int n)
+		{
+			Node *temp = getroot();
+			int val = pow(2, treeHeight(root) - n + 2);
+			cout << setw(val) << "";
+			prinlv(temp, n, val);
+		}
+
+		void dispLV(Node *p, int lv, int d)
+		{
+			int disp = 2 * d;
+			if (lv == 0)
+			{
+				if (p == NULL)
+				{
+
+					cout << " x ";
+					cout << setw(disp - 3) << "";
+					return;
+				}
+				else
+				{
+					int result = ((p->key <= 1) ? 1 : log10(p->key) + 1);
+					cout << " " << p->key << " ";
+					cout << setw(disp - result - 2) << "";
+				}
+			}
+			else
+			{
+				if (p == NULL && lv >= 1)
+				{
+					dispLV(NULL, lv - 1, d);
+					dispLV(NULL, lv - 1, d);
+				}
+				else
+				{
+					dispLV(p->left, lv - 1, d);
+					dispLV(p->right, lv - 1, d);
+				}
+			}
+		} */
+
+		void printRBT(const std::string& prefix, const node_pointer node, bool isLeft)
+		{
+			if( node != NULL )
+			{
+				std::cout << prefix;
+
+				std::cout << (isLeft ? "├──" : "└──" );
+
+				// print the value of the node
+				std::cout << *(node->content) << std::endl;
+
+				// enter the next tree level - left and right branch
+				printRBT( prefix + (isLeft ? "│   " : "    "), node->left_child, true);
+				printRBT( prefix + (isLeft ? "│   " : "    "), node->right_child, false);
+			}
+		}
+
 		void printTree(void)
+		{
+			printRBT("", this->_root, false);
+		}
+
+		/* 		void printTree(void)
 		{
 			int height = calculateHeight(this->_root);
 			std::cout << "Red-Black Tree(size: " << this->_size << ", height: " << height << ")\n";
@@ -709,14 +782,12 @@ class RBT
 
 		}
 
-/*
 all the box characters
 ┌──┬──┐
 │  │  │
 ├──┼──┤
 │  │  │
 └──┴──┘
-*/
 
 
 		int calculateHeight(node_pointer node)
@@ -739,17 +810,17 @@ all the box characters
 					ptr = ptr->right_child;
 			}
 			return (i);
-		}
+		} */
 
 	private:
-		node_pointer				_root;
-		node_pointer				_end;
-		node_pointer				_rend;
-		allocator_type				_allocator;
-		std::allocator< Node<T> >	_nodeAlloc;
-		key_compare					_compare;
-		size_type					_size;
-};
+		node_pointer _root;
+		node_pointer _end;
+		node_pointer _rend;
+		allocator_type _allocator;
+		std::allocator< Node<T> > _nodeAlloc;
+		key_compare _compare;
+		size_type _size;
+	};
 
 } // namespace ft
 

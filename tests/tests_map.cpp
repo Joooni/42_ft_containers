@@ -12,6 +12,5 @@ int main(void)
 	std::cout << RBTorsten.getRoot() << " root: " << *(RBTorsten.getRoot()->content) << std::endl;
 	std::cout << RBTorsten.getRoot()->left_child << " root left: " << *(RBTorsten.getRoot()->left_child->content) << std::endl;
 	std::cout << RBTorsten.getRoot()->right_child << " root right: " << *(RBTorsten.getRoot()->right_child->content) << std::endl;
-	std::cout << RBTorsten.calculateHeight(RBTorsten.getRoot()) << std::endl;
 	RBTorsten.printTree();
 }
