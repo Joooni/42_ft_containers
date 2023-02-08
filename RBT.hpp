@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/07 10:46:31 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/08 15:56:59 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -660,59 +660,6 @@ namespace ft
 			node->color = !node->color;
 		}
 
-/* 		void printTree()
-		{
-			int i = 0;
-			while (i <= treeHeight(getroot()))
-			{
-				printlv(i);
-				i++;
-				cout << endl;
-			}
-		}
-
-		void printlv(int n)
-		{
-			Node *temp = getroot();
-			int val = pow(2, treeHeight(root) - n + 2);
-			cout << setw(val) << "";
-			prinlv(temp, n, val);
-		}
-
-		void dispLV(Node *p, int lv, int d)
-		{
-			int disp = 2 * d;
-			if (lv == 0)
-			{
-				if (p == NULL)
-				{
-
-					cout << " x ";
-					cout << setw(disp - 3) << "";
-					return;
-				}
-				else
-				{
-					int result = ((p->key <= 1) ? 1 : log10(p->key) + 1);
-					cout << " " << p->key << " ";
-					cout << setw(disp - result - 2) << "";
-				}
-			}
-			else
-			{
-				if (p == NULL && lv >= 1)
-				{
-					dispLV(NULL, lv - 1, d);
-					dispLV(NULL, lv - 1, d);
-				}
-				else
-				{
-					dispLV(p->left, lv - 1, d);
-					dispLV(p->right, lv - 1, d);
-				}
-			}
-		} */
-
 		void printRBT(const std::string& prefix, const node_pointer node, bool isLeft)
 		{
 			if( node != NULL )
@@ -722,7 +669,7 @@ namespace ft
 				std::cout << (isLeft ? "├──" : "└──" );
 
 				// print the value of the node
-				std::cout << *(node->content) << std::endl;
+				std::cout << (node->color == BLACK ? COLOR_BRIGHT_DARK_GREY : COLOR_BRIGHT_RED ) << *(node->content) << END << std::endl;
 
 				// enter the next tree level - left and right branch
 				printRBT( prefix + (isLeft ? "│   " : "    "), node->left_child, true);
@@ -735,82 +682,23 @@ namespace ft
 			printRBT("", this->_root, false);
 		}
 
-		/* 		void printTree(void)
+		void clear()
 		{
-			int height = calculateHeight(this->_root);
-			std::cout << "Red-Black Tree(size: " << this->_size << ", height: " << height << ")\n";
-			node_pointer print_node = max(this->_root);
-			node_pointer min_node = min(this->_root);
-			std::string	print_str;
-			int last_nbr_len = SSTR(*((predecessor(max(this->_root))->content))).length();
-			while (print_node != min_node)
-			{
-				print_str.clear();
-				if (print_node != this->_root)
-					print_str += std::string( last_nbr_len, ' ');
-					// print_str += " ";
-				for (int i = 1; i < distanceToRoot(print_node); i++)
-					print_str += std::string(last_nbr_len, ' ') + " ";
-				if (is_left_son(print_node))
-					print_str += "└";
-				else if (is_right_son(print_node))
-					print_str += "┌";
-				std::string color = COLOR_BOLD_RED;
-				if (print_node->color == BLACK)
-					color = COLOR_BRIGHT_DARK_GREY;
-				print_str += color + SSTR(*(print_node->content)) + END;
-				if (print_node->left_child && print_node->right_child)
-					print_str += "┤";
-				else if (print_node->left_child)
-					print_str += "┐";
-				else if (print_node->right_child)
-					print_str += "┘";
-				std::cout << print_str << std::endl;
-				last_nbr_len = SSTR(*(print_node->content)).length();
-				print_node = predecessor(print_node);
-			}
-			print_str.clear();
-			print_str += std::string( last_nbr_len, ' ');
-			for (int i = 1; i < distanceToRoot(print_node); i++)
-				print_str += std::string(last_nbr_len, ' ') + " ";
-			print_str += "└";
-			std::string color = COLOR_BOLD_RED;
-			if (print_node->color == BLACK)
-			color = COLOR_BRIGHT_DARK_GREY;
-			print_str += color + SSTR(*(print_node->content)) + END;
-			std::cout << print_str << std::endl;
-
+			this->clear_subtree(this->_root);
+			this->_root = this->_end;
+			this->_size = 0;
 		}
 
-all the box characters
-┌──┬──┐
-│  │  │
-├──┼──┤
-│  │  │
-└──┴──┘
-
-
-		int calculateHeight(node_pointer node)
+		void deleteEnds()
 		{
-			if (node == NULL)
-				return (-1);
-			return (std::max(calculateHeight(node->left_child), calculateHeight(node->right_child)) + 1);
+			this->_allocator.destroy(this->_end->content);
+			this->_allocator.deallocate(this->_end->content, 1);
+			this->_nodealloc.deallocate(this->_end, 1);
+			this->_allocator.destroy(this->_rend->content);
+			this->_allocator.deallocate(this->_rend->content, 1);
+			this->_nodealloc.deallocate(this->_rend, 1);
 		}
 
-		int distanceToRoot(node_pointer node)
-		{
-			int i = 0;
-			node_pointer ptr = this->_root;
-			while (node != ptr)
-			{
-				i++;
-				if (*(ptr->content) > *(node->content))
-					ptr = ptr->left_child;
-				else
-					ptr = ptr->right_child;
-			}
-			return (i);
-		} */
 
 	private:
 		node_pointer _root;
@@ -820,6 +708,36 @@ all the box characters
 		std::allocator< Node<T> > _nodeAlloc;
 		key_compare _compare;
 		size_type _size;
+
+
+
+		void clear_subtree(node_pointer node)
+		{
+			if (!node || node == this->_end)
+				return ;
+			if (node->left_child)
+				clear_subtree(node->left_child);
+			if (node->right_child)
+				clear_subtree(node->right_child);
+			delete_node(node);
+		}
+
+		void delete_node(node_pointer node)
+		{
+			if (!node)
+				return ;
+			if (node->parent)
+			{
+				if (node == node->parent->left_child)
+					node->parent->left_child = NULL;
+				else if (node == node->parent->right_child)
+					node->parent->right_child = NULL;
+			}
+			this->_allocator.destroy(node->content);
+			this->_allocator.deallocate(node->content, 1);
+			this->_nodeAlloc.deallocate(node, 1);
+		}
+
 	};
 
 } // namespace ft

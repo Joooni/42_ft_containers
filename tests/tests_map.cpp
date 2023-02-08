@@ -1,16 +1,29 @@
 #include "../RBT.hpp"
 #include <functional>
-
+#include <cstdlib>
+#include <time.h>
+#include "../vector.hpp"
+#define DELIM	std::string(10, '~')
 int main(void)
 {
-	ft::RBT<int, std::less<int> > RBTorsten;
-	for (int i = 1; i < 25; i++)
+
+	std::cout << DELIM << "Test 1" << DELIM << std::endl;
 	{
-		std::cout << i << std::endl;
-		RBTorsten.insert(i);
+		ft::RBT<int, std::less<int> > RBTorsten;
+		for (int i = 1; i < 25; i++)
+			RBTorsten.insert(i);
+		RBTorsten.printTree();
 	}
-	std::cout << RBTorsten.getRoot() << " root: " << *(RBTorsten.getRoot()->content) << std::endl;
-	std::cout << RBTorsten.getRoot()->left_child << " root left: " << *(RBTorsten.getRoot()->left_child->content) << std::endl;
-	std::cout << RBTorsten.getRoot()->right_child << " root right: " << *(RBTorsten.getRoot()->right_child->content) << std::endl;
-	RBTorsten.printTree();
+	std::cout << DELIM << "Test 2" << DELIM << std::endl;
+	{
+		ft::RBT<int, std::less<int> >	RBTommy;
+		srand(time(0));
+		for (int i = 0; i < 20; i++)
+		{
+			int nbr = rand() % 100;
+			RBTommy.insert(nbr);
+		}
+		RBTommy.printTree();
+
+	}
 }
