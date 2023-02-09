@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/08 15:56:59 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/09 16:49:07 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,13 +135,15 @@ namespace ft
 			}
 			this->_end->parent = this->max(this->_root);
 			this->_rend->parent = this->min(this->_root);
+			return (*this);
 		}
 
 		// copy the subtrees starting at a specified nodeSrc to the node located at nodeDest
 		// checks for left and right childen and if they exist, allocates and sets them to the correct values
 		// then, calls itself on the newly created child
-		void copySubTree(node_pointer nodeDest, node_pointer nodeSrc)
+		void copySubtree(node_pointer nodeDest, node_pointer nodeSrc)
 		{
+			std::cout << "inside copy subtree \n";
 			if (nodeSrc->left_child)
 			{
 				nodeDest->left_child = this->_nodeAlloc.allocate(1);
@@ -335,20 +337,53 @@ namespace ft
 			return ((node->parent));
 		}
 
+		void erase(value_type &val)
+		{
+			node_pointer node = this->find_node(val);
+			if (node == this->_end || node == this->_rend)
+				return ;
+			if (node == this->max(this->_root))
+				this->_end->parent = this->predecessor(this->max(this->_root));
+			else if (node == this->min(this->_root))
+				this->_rend->parent = this->successor(this->min(this->_root));
+			this->erase(node);
+		}
+
+
+		template<typename Key>
+		size_type erase (Key &key)
+		{
+			node_pointer node = this->find_node<Key>(key);
+			if (node == this->_end || node == this->_rend)
+				return (0);
+			if (node == this->max(this->_root))
+				this->_end->parent = this->predecessor(this->max(this->_root));
+			else if (node == this->min(this->_root))
+				this->_rend->parent = this->successor(this->min(this->_root));
+			this->erase(node);
+			return (1);
+		}
+
 		/** similar to BST deletion, but with more specific cases
 		 * three base cases that might get more specific
 		 * 	Case 1: node has no children - just replace it with NIL node
 		 * 	Case 2: node has one child - replace node with its child
 		 * 	Case 3: node has two children - find nodes successor and have it take nodes position in the tree
 		 * 		in that case, the original subtrees of node become the subtrees of the new node
-
-
 		*/
 		void erase(node_pointer node)
 		{
+			if (!this->_root->left_child && !this->_root->right_child && this->_root != this->_end)
+			{
+				delete_node(this->_root);
+				this->_root = this->_end;
+				this->_size--;
+				return ;
+			}
 			node_pointer moved_node = node;
 			node_pointer temp;
 			bool node_originalcolor = moved_node->color;
+
 			if (!node->left_child)
 			{
 				temp = node->right_child;
@@ -379,7 +414,9 @@ namespace ft
 			}
 			if (node_originalcolor == BLACK)
 				deleteFix(temp);
+			delete_node(node);
 		}
+
 		// subroutine to replace one subtree as a child of its parent with another subtree
 		void transplant(node_pointer node, node_pointer swap)
 		{
@@ -619,6 +656,117 @@ namespace ft
 			node->parent = pivot;
 		}
 
+
+
+		void recolor(node_pointer node)
+		{
+			if (!node)
+				return;
+			node->color = !node->color;
+		}
+
+		void swap(RBT &rhs)
+		{
+			node_pointer temp_root = this->_root;
+			node_pointer temp_end = this->_end;
+			node_pointer temp_rend = this->_rend;
+			allocator_type temp_alloc = this->_allocator;
+			key_compare temp_compare = this->_compare;
+			size_type temp_size = this->_size;
+
+			this->_root = rhs._root;
+			this->_end = rhs._end;
+			this->_rend = rhs._rend;
+			this->_allocator = rhs._allocator;
+			this->_compare = rhs._compare;
+			this->_size = rhs._size;
+
+			rhs._root = temp_root;
+			rhs._end = temp_end;
+			rhs._rend = temp_rend;
+			rhs._allocator = temp_alloc;
+			rhs._compare = temp_compare;
+			rhs._size = temp_size;
+		}
+
+		void printTree(void)
+		{
+			printRBT("", this->_root, false);
+		}
+
+		void clear()
+		{
+			this->clearSubtree(this->_root);
+			this->_root = this->_end;
+			this->_size = 0;
+		}
+
+		void deleteEnds()
+		{
+			this->_allocator.destroy(this->_end->content);
+			this->_allocator.deallocate(this->_end->content, 1);
+			this->_nodeAlloc.deallocate(this->_end, 1);
+			this->_allocator.destroy(this->_rend->content);
+			this->_allocator.deallocate(this->_rend->content, 1);
+			this->_nodeAlloc.deallocate(this->_rend, 1);
+		}
+
+
+	private:
+		node_pointer _root;
+		node_pointer _end;
+		node_pointer _rend;
+		allocator_type _allocator;
+		std::allocator< Node<T> > _nodeAlloc;
+		key_compare _compare;
+		size_type _size;
+
+
+		void printRBT(const std::string& prefix, const node_pointer node, bool isLeft)
+		{
+			if( node != NULL )
+			{
+				std::cout << prefix;
+
+				std::cout << (isLeft ? "├──" : "└──" );
+
+				// print the value of the node
+				std::cout << (node->color == BLACK ? COLOR_BRIGHT_DARK_GREY : COLOR_BRIGHT_RED ) << *(node->content) << END << std::endl;
+
+				// enter the next tree level - left and right branch
+				printRBT( prefix + (isLeft ? "│   " : "    "), node->left_child, true);
+				printRBT( prefix + (isLeft ? "│   " : "    "), node->right_child, false);
+			}
+		}
+
+
+		void clearSubtree(node_pointer node)
+		{
+			if (!node || node == this->_end)
+				return ;
+			if (node->left_child)
+				clearSubtree(node->left_child);
+			if (node->right_child)
+				clearSubtree(node->right_child);
+			delete_node(node);
+		}
+
+		void delete_node(node_pointer node)
+		{
+			if (!node)
+				return ;
+			if (node->parent)
+			{
+				if (node == node->parent->left_child)
+					node->parent->left_child = NULL;
+				else if (node == node->parent->right_child)
+					node->parent->right_child = NULL;
+			}
+			this->_allocator.destroy(node->content);
+			this->_allocator.deallocate(node->content, 1);
+			this->_nodeAlloc.deallocate(node, 1);
+		}
+
 		void BST_insertion(node_pointer node)
 		{
 			node_pointer current = this->_root;
@@ -651,91 +799,6 @@ namespace ft
 					}
 				}
 			}
-		}
-
-		void recolor(node_pointer node)
-		{
-			if (!node)
-				return;
-			node->color = !node->color;
-		}
-
-		void printRBT(const std::string& prefix, const node_pointer node, bool isLeft)
-		{
-			if( node != NULL )
-			{
-				std::cout << prefix;
-
-				std::cout << (isLeft ? "├──" : "└──" );
-
-				// print the value of the node
-				std::cout << (node->color == BLACK ? COLOR_BRIGHT_DARK_GREY : COLOR_BRIGHT_RED ) << *(node->content) << END << std::endl;
-
-				// enter the next tree level - left and right branch
-				printRBT( prefix + (isLeft ? "│   " : "    "), node->left_child, true);
-				printRBT( prefix + (isLeft ? "│   " : "    "), node->right_child, false);
-			}
-		}
-
-		void printTree(void)
-		{
-			printRBT("", this->_root, false);
-		}
-
-		void clear()
-		{
-			this->clear_subtree(this->_root);
-			this->_root = this->_end;
-			this->_size = 0;
-		}
-
-		void deleteEnds()
-		{
-			this->_allocator.destroy(this->_end->content);
-			this->_allocator.deallocate(this->_end->content, 1);
-			this->_nodealloc.deallocate(this->_end, 1);
-			this->_allocator.destroy(this->_rend->content);
-			this->_allocator.deallocate(this->_rend->content, 1);
-			this->_nodealloc.deallocate(this->_rend, 1);
-		}
-
-
-	private:
-		node_pointer _root;
-		node_pointer _end;
-		node_pointer _rend;
-		allocator_type _allocator;
-		std::allocator< Node<T> > _nodeAlloc;
-		key_compare _compare;
-		size_type _size;
-
-
-
-		void clear_subtree(node_pointer node)
-		{
-			if (!node || node == this->_end)
-				return ;
-			if (node->left_child)
-				clear_subtree(node->left_child);
-			if (node->right_child)
-				clear_subtree(node->right_child);
-			delete_node(node);
-		}
-
-		void delete_node(node_pointer node)
-		{
-			if (!node)
-				return ;
-			if (node->parent)
-			{
-				if (node == node->parent->left_child)
-					node->parent->left_child = NULL;
-				else if (node == node->parent->right_child)
-					node->parent->right_child = NULL;
-			}
-			this->_allocator.destroy(node->content);
-			this->_allocator.deallocate(node->content, 1);
-			this->_nodeAlloc.deallocate(node, 1);
 		}
 
 	};

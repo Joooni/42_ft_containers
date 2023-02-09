@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 10:39:36 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/08 15:54:45 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/09 16:56:43 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 #include "RBT_iterator.hpp"
 #include "utils.hpp"
 #include <memory>
-
 // checking out STL
+// #include <map>
 // #include <bits/stl_tree.h>
 // #include <bits/stl_map.h>
 
@@ -100,6 +100,7 @@ class map
 		~map()
 		{
 			this->_tree.clear();
+			this->_tree.deleteEnds();
 		}
 
 		//-*-*-*-*-*-*-*-*-*-//
@@ -182,13 +183,13 @@ class map
 
 		reverse_iterator rend()
 		{
-			reverse_iterator rIter(this->begin());
+			reverse_iterator rIter(this->_tree.begin());
 			return (rIter);
 		}
 
 		const_reverse_iterator rend() const
 		{
-			const_reverse_iterator rIter(this->begin());
+			const_reverse_iterator rIter(this->_tree.begin());
 			return (rIter);
 		}
 
@@ -211,10 +212,184 @@ class map
 			return (this->_tree.max_size());
 		}
 
+		//-*-*-*-*-*-*-*-*-*-//
+		//      Modifier     //
+		//-*-*-*-*-*-*-*-*-*-//
 
+		void clear()
+		{
+			this->_tree.clear();
+		}
 
+		// inserts value
+		pair<iterator, bool> insert(const value_type &value)
+		{
+			bool temp_bool = ((this->_tree.find_node(value)) == this->_tree.getEnd());
+			iterator temp_iter = iterator(this->_tree.insert(value), this->_tree.getEnd(), this->_tree.getRend());
+			return (ft::make_pair<iterator, bool>(temp_iter, temp_bool));
+		}
+
+		// inserts value as close as possible to position prior to pos
+		// but... its a BST. there is only one right space for it to go
+		iterator insert(iterator pos, const value_type &value)
+		{
+			(void)pos;
+			return (insert(value).first);
+		}
+
+		template <class InputIt>
+		void insert(InputIt first, InputIt last)
+		{
+			for (; first != last; ++first)
+				this->_tree.insert(*first);
+		}
+
+		iterator erase(iterator pos)
+		{
+			iterator temp(pos);
+			++temp;
+			this->_tree.erase(*pos);
+			return (temp);
+		}
+
+		iterator erase(iterator first, iterator last)
+		{
+			map<key_type, mapped_type> temp(first, last);
+			for (iterator it = temp.begin(); it != temp.end(); ++it)
+				this->erase(it->first);
+			return (last);
+		}
+
+		size_type erase(const key_type &key)
+		{
+			return (this->_tree.erase(key));
+		}
+
+		void swap(map &other)
+		{
+			this->_tree.swap(other._tree);
+		}
+
+		size_type count(const key_type &key) const
+		{
+			return ((this->find(key) == this->end()) ? 1 : 0);
+		}
+
+		iterator find (const key_type& key)
+		{
+			return (iterator(this->_tree.template find_node<key_type>(key), this->_tree.getEnd(), this->_tree.getRend()));
+		}
+
+		const_iterator find (const key_type& key) const
+		{
+			return (const_iterator(this->_tree.template find_node<const key_type>(key), this->_tree.getEnd(), this->_tree.getRend()));
+		}
+
+		ft::pair<iterator, iterator> equal_range(const key_type &key)
+		{
+			return (ft::make_pair<iterator, iterator>(lower_bound(key), upper_bound(key)));
+		}
+
+		ft::pair<const_iterator, const_iterator> equal_range(const key_type &key) const
+		{
+			return (ft::make_pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key)));
+		}
+
+		iterator lower_bound(const key_type &key)
+		{
+			iterator it = this->begin();
+			while (it != this->end() && (this->_compare(it->first, key)))
+				++it;
+			return (it);
+		}
+
+		const_iterator lower_bound(const key_type &key) const
+		{
+			const_iterator it = this->begin();
+			while (it != this->end() && (this->_compare(it->first, key)))
+				++it;
+			return (it);
+		}
+
+		iterator upper_bound(const key_type &key)
+		{
+			iterator it = this->begin();
+			while (it != this->end() && !(this->_compare(key, it->first)))
+				++it;
+			return (it);
+		}
+
+		const_iterator upper_bound(const key_type &key) const
+		{
+			const_iterator it = this->begin();
+			while (it != this->end() && !(this->_compare(key, it->first)))
+				++it;
+			return (it);
+		}
+
+		key_compare key_comp() const
+		{
+			return (this->_compare);
+		}
+
+		value_compare value_comp() const
+		{
+			return (value_compare(this->_compare));
+		}
 };
 
+//-*-*-*-*-*-*-*-*-*-//
+//Operator overloads //
+//-*-*-*-*-*-*-*-*-*-//
+
+
+template<class Key, class T, class Compare, class Alloc>
+bool operator==(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
+{
+	if (lhs.size() != rhs.size())
+		return (false);
+	return (ft::equal<typename ft::map<Key, T>::const_iterator, typename ft::map<Key, T>::const_iterator>(lhs.begin(), lhs.end(), rhs.begin()));
+}
+
+template<class Key, class T, class Compare, class Alloc>
+bool operator!=(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
+{
+	return (!(lhs == rhs));
+}
+
+template<class Key, class T, class Compare, class Alloc>
+bool operator<(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
+{
+	return (ft::lexicographical_compare<typename ft::map<Key, T>::const_iterator, typename ft::map<Key, T>::const_iterator>(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+}
+
+template<class Key, class T, class Compare, class Alloc>
+bool operator<=(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
+{
+	return (!(lhs < rhs));
+}
+
+template<class Key, class T, class Compare, class Alloc>
+bool operator>(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
+{
+	return (rhs < lhs);
+}
+
+template<class Key, class T, class Compare, class Alloc>
+bool operator>=(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
+{
+	return (!(rhs < lhs));
+}
+
 } // namespace ft
+
+namespace std
+{
+	template <class Key, class T, class Compare, class Alloc>
+	void swap(ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs)
+	{
+		lhs.swap(rhs);
+	}
+}
 
 #endif
