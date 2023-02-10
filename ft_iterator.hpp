@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 15:15:34 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/07 10:47:07 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/10 09:04:40 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ struct iterator_traits<T*>
 	typedef T&							reference;
 	typedef random_access_iterator_tag	iterator_category;
 };
+
 template <class T>
 struct iterator_traits<const T*>
 {

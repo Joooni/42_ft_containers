@@ -6,18 +6,17 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 10:39:36 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/09 16:56:43 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/10 13:43:15 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_HPP
 #define MAP_HPP
 #include "RBT.hpp"
-#include "RBT_iterator.hpp"
 #include "utils.hpp"
 #include <memory>
 // checking out STL
-// #include <map>
+#include <map>
 // #include <bits/stl_tree.h>
 // #include <bits/stl_map.h>
 
@@ -140,10 +139,10 @@ class map
 			return ((*valIter).second);
 		}
 
-		// mapped_type &operator[](const key_type &key)
-		// {
-		// 	// call insert here
-		// }
+		mapped_type &operator[](const key_type &key)
+		{
+			return((*((this->insert(ft::make_pair(key, mapped_type()))).first)).second);
+		}
 
 		//-*-*-*-*-*-*-*-*-*-//
 		//     Iterators     //
@@ -183,14 +182,12 @@ class map
 
 		reverse_iterator rend()
 		{
-			reverse_iterator rIter(this->_tree.begin());
-			return (rIter);
+			return (reverse_iterator(this->_tree.begin()));
 		}
 
 		const_reverse_iterator rend() const
 		{
-			const_reverse_iterator rIter(this->_tree.begin());
-			return (rIter);
+			return (const_reverse_iterator(this->_tree.begin()));
 		}
 
 		//-*-*-*-*-*-*-*-*-*-//
@@ -335,6 +332,11 @@ class map
 		value_compare value_comp() const
 		{
 			return (value_compare(this->_compare));
+		}
+
+		void printTree() const
+		{
+			this->_tree.printTree();
 		}
 };
 

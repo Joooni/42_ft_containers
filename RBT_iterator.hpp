@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:40 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/07 10:47:10 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/10 14:41:09 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define RBT_ITERATOR_HPP
 
 #include "RBT.hpp"
+
 #include "ft_reverse_iterator.hpp"
-# include <map>
 
 namespace ft
 {
@@ -47,7 +47,7 @@ class RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 
 		RBT_iterator(): _current(0), _end(0), _rend(0) {}
 		RBT_iterator(T *curr, T *end, T *rend):  _current(curr), _end(end), _rend(rend) {}
-		RBT_iterator(const RBT_iterator &rhs): _current(rhs._current), _end(rhs._end), _rend(rhs._current) {}
+		RBT_iterator(const RBT_iterator &rhs): _current(rhs._current), _end(rhs._end), _rend(rhs._rend) {}
 		template <typename differentTree>
 		RBT_iterator(const RBT_iterator<T, differentTree> &rhs):  _current(rhs.base()), _end(rhs.getEnd()), _rend(rhs.getRend()) {}
 
@@ -68,7 +68,6 @@ class RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 		//-*-*-*-*-*-*-*-*-*-//
 		//     Operators     //
 		//-*-*-*-*-*-*-*-*-*-//
-
 
 		RBT_iterator &operator++()
 		{
@@ -144,7 +143,17 @@ class RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 			return (this->base() == rhs.base());
 		}
 
-		bool operator!=(RBT_iterator<T, Tree> rhs) const
+		bool operator==(const_RBT_iterator<T, Tree> rhs) const
+		{
+			return (this->base() == rhs.base());
+		}
+
+		bool operator!=(RBT_iterator<T, Tree> rhs)
+		{
+			return (this->base() != rhs.base());
+		}
+
+		bool operator!=(const_RBT_iterator<T, Tree> rhs) const
 		{
 			return (this->base() != rhs.base());
 		}
@@ -292,7 +301,17 @@ class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 			return (temp);
 		}
 
-		bool operator==(const_RBT_iterator<T, Tree> rhs)
+		bool operator==(RBT_iterator<T, Tree> rhs)
+		{
+			return (this->base() == rhs.base());
+		}
+
+		bool operator!=(RBT_iterator<T, Tree> rhs)
+		{
+			return (this->base() != rhs.base());
+		}
+
+		bool operator==(const_RBT_iterator<T, Tree> rhs) const
 		{
 			return (this->base() == rhs.base());
 		}

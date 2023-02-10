@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/09 16:49:07 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/10 13:48:06 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ namespace ft
 			while (check_node->parent && check_node->parent->color == RED)
 			{
 				node_pointer grandparent = check_node->parent->parent;
-				// Case 3.2
+				// Case 3.1: both parent and parents sibling are red
 				if (grandparent->left_child && grandparent->right_child && grandparent->left_child->color == RED && grandparent->right_child->color == RED)
 				{
 					recolor(grandparent->left_child);
@@ -221,6 +221,7 @@ namespace ft
 						recolor(grandparent);
 					check_node = grandparent;
 				}
+				// Case 3.2
 				else
 				{
 					// RL or LL
@@ -375,7 +376,7 @@ namespace ft
 		{
 			if (!this->_root->left_child && !this->_root->right_child && this->_root != this->_end)
 			{
-				delete_node(this->_root);
+				deleteNode(this->_root);
 				this->_root = this->_end;
 				this->_size--;
 				return ;
@@ -414,100 +415,9 @@ namespace ft
 			}
 			if (node_originalcolor == BLACK)
 				deleteFix(temp);
-			delete_node(node);
+			deleteNode(node);
 		}
 
-		// subroutine to replace one subtree as a child of its parent with another subtree
-		void transplant(node_pointer node, node_pointer swap)
-		{
-			if (node == this->_root)
-				this->_root = swap;
-			else if (is_left_son(node))
-				node->parent->left_child = swap;
-			else
-				node->parent->right_child = swap;
-			swap->parent = node->parent;
-		}
-
-		void deleteFix(node_pointer node)
-		{
-			node_pointer sibling_node;
-			while (node != this->_root && node->color == BLACK)
-			{
-				if (is_left_son(node))
-				{
-					sibling_node = sibling(node);
-					// Case 1: node sibling is RED
-					// switch colors of sibling and parent
-					// and perform left rotation,
-					// transforming this into Cases 2, 3, or 4
-					// depending on their childrens' colors
-					if (sibling_node->color == RED)
-					{
-						sibling_node->color = BLACK;
-						node->parent->color = RED;
-						rotate_left(node->parent);
-						sibling_node = sibling(node);
-					}
-					// Case 2: both sibling of node AND childen of sibling are black
-					if (sibling_node->left_child->color == BLACK && sibling_node->right_child->color == BLACK)
-					{
-						sibling_node->color = RED;
-						node = node->parent;
-					}
-					else
-					{
-						// Case 3: only right child is black
-						// transforms into Case 4
-						if (sibling_node->right_child->color == BLACK)
-						{
-							sibling_node->left_child->color = BLACK;
-							sibling_node->color = RED;
-							rotate_right(sibling_node);
-							sibling_node = sibling(node);
-						}
-						// Case 4: right child is red
-						sibling_node->color = node->parent->color;
-						node->parent->color = BLACK;
-						sibling_node->right_child->color = BLACK;
-						rotate_left(node->parent);
-						node = this->_root;
-					}
-				}
-				else // same as before, just for the right subtree
-				{
-					sibling_node = sibling(node);
-					if (sibling_node->color == RED)
-					{
-						sibling_node->color = BLACK;
-						node->parent->color = RED;
-						rotate_right(node->parent);
-						sibling_node = sibling(node);
-					}
-					if (sibling_node->right_child->color == BLACK && sibling_node->left_child->color == BLACK)
-					{
-						sibling_node->color = RED;
-						node = node->parent;
-					}
-					else
-					{
-						if (sibling_node->left_child->color == BLACK)
-						{
-							sibling_node->right_child->color = BLACK;
-							sibling_node->color = RED;
-							rotate_left(sibling_node);
-							sibling_node = sibling(node);
-						}
-						sibling_node->color = node->parent->color;
-						node->parent->color = BLACK;
-						sibling_node->left_child->color = BLACK;
-						rotate_right(node->parent);
-						node = this->_root;
-					}
-				}
-			}
-			node->color = BLACK;
-		}
 
 		node_pointer getRoot() const
 		{
@@ -620,6 +530,63 @@ namespace ft
 			return (is_left_son(node) ? node->parent->right_child : node->parent->left_child);
 		}
 
+		void swap(RBT &rhs)
+		{
+			node_pointer temp_root = this->_root;
+			node_pointer temp_end = this->_end;
+			node_pointer temp_rend = this->_rend;
+			allocator_type temp_alloc = this->_allocator;
+			key_compare temp_compare = this->_compare;
+			size_type temp_size = this->_size;
+
+			this->_root = rhs._root;
+			this->_end = rhs._end;
+			this->_rend = rhs._rend;
+			this->_allocator = rhs._allocator;
+			this->_compare = rhs._compare;
+			this->_size = rhs._size;
+
+			rhs._root = temp_root;
+			rhs._end = temp_end;
+			rhs._rend = temp_rend;
+			rhs._allocator = temp_alloc;
+			rhs._compare = temp_compare;
+			rhs._size = temp_size;
+		}
+
+		void printTree(void) const
+		{
+			printRBT("", this->_root, false);
+		}
+
+		void clear()
+		{
+			this->clearSubtree(this->_root);
+			this->_root = this->_end;
+			this->_size = 0;
+		}
+
+		void deleteEnds()
+		{
+			this->_allocator.destroy(this->_end->content);
+			this->_allocator.deallocate(this->_end->content, 1);
+			this->_nodeAlloc.deallocate(this->_end, 1);
+			this->_allocator.destroy(this->_rend->content);
+			this->_allocator.deallocate(this->_rend->content, 1);
+			this->_nodeAlloc.deallocate(this->_rend, 1);
+		}
+
+
+	private:
+		node_pointer _root;
+		node_pointer _end;
+		node_pointer _rend;
+		allocator_type _allocator;
+		std::allocator< Node<T> > _nodeAlloc;
+		key_compare _compare;
+		size_type _size;
+
+
 		// passed node is the root of the subtree to be rotated and thus the initial parent
 		// pivot is the child that takes the root node's place
 		void rotate_left(node_pointer node)
@@ -656,8 +623,6 @@ namespace ft
 			node->parent = pivot;
 		}
 
-
-
 		void recolor(node_pointer node)
 		{
 			if (!node)
@@ -665,77 +630,21 @@ namespace ft
 			node->color = !node->color;
 		}
 
-		void swap(RBT &rhs)
-		{
-			node_pointer temp_root = this->_root;
-			node_pointer temp_end = this->_end;
-			node_pointer temp_rend = this->_rend;
-			allocator_type temp_alloc = this->_allocator;
-			key_compare temp_compare = this->_compare;
-			size_type temp_size = this->_size;
 
-			this->_root = rhs._root;
-			this->_end = rhs._end;
-			this->_rend = rhs._rend;
-			this->_allocator = rhs._allocator;
-			this->_compare = rhs._compare;
-			this->_size = rhs._size;
-
-			rhs._root = temp_root;
-			rhs._end = temp_end;
-			rhs._rend = temp_rend;
-			rhs._allocator = temp_alloc;
-			rhs._compare = temp_compare;
-			rhs._size = temp_size;
-		}
-
-		void printTree(void)
-		{
-			printRBT("", this->_root, false);
-		}
-
-		void clear()
-		{
-			this->clearSubtree(this->_root);
-			this->_root = this->_end;
-			this->_size = 0;
-		}
-
-		void deleteEnds()
-		{
-			this->_allocator.destroy(this->_end->content);
-			this->_allocator.deallocate(this->_end->content, 1);
-			this->_nodeAlloc.deallocate(this->_end, 1);
-			this->_allocator.destroy(this->_rend->content);
-			this->_allocator.deallocate(this->_rend->content, 1);
-			this->_nodeAlloc.deallocate(this->_rend, 1);
-		}
-
-
-	private:
-		node_pointer _root;
-		node_pointer _end;
-		node_pointer _rend;
-		allocator_type _allocator;
-		std::allocator< Node<T> > _nodeAlloc;
-		key_compare _compare;
-		size_type _size;
-
-
-		void printRBT(const std::string& prefix, const node_pointer node, bool isLeft)
+		void printRBT(const std::string& prefix, const node_pointer node, bool isLeft) const
 		{
 			if( node != NULL )
 			{
 				std::cout << prefix;
 
-				std::cout << (isLeft ? "├──" : "└──" );
+				std::cout << (isLeft ? "L├───" : "R└───" );
 
 				// print the value of the node
-				std::cout << (node->color == BLACK ? COLOR_BRIGHT_DARK_GREY : COLOR_BRIGHT_RED ) << *(node->content) << END << std::endl;
+				std::cout << (node->color == BLACK ? COLOR_BRIGHT_DARK_GREY : COLOR_BRIGHT_RED ) << (*node->content).first << END << std::endl;
 
 				// enter the next tree level - left and right branch
-				printRBT( prefix + (isLeft ? "│   " : "    "), node->left_child, true);
-				printRBT( prefix + (isLeft ? "│   " : "    "), node->right_child, false);
+				printRBT( prefix + (isLeft ? " │   " : "    "), node->left_child, true);
+				printRBT( prefix + (isLeft ? " │   " : "    "), node->right_child, false);
 			}
 		}
 
@@ -748,10 +657,10 @@ namespace ft
 				clearSubtree(node->left_child);
 			if (node->right_child)
 				clearSubtree(node->right_child);
-			delete_node(node);
+			deleteNode(node);
 		}
 
-		void delete_node(node_pointer node)
+		void deleteNode(node_pointer node)
 		{
 			if (!node)
 				return ;
@@ -800,6 +709,99 @@ namespace ft
 				}
 			}
 		}
+
+		// subroutine to replace one subtree as a child of its parent with another subtree
+		void transplant(node_pointer node, node_pointer swap)
+		{
+			if (node == this->_root)
+				this->_root = swap;
+			else if (is_left_son(node))
+				node->parent->left_child = swap;
+			else
+				node->parent->right_child = swap;
+			swap->parent = node->parent;
+		}
+
+		void deleteFix(node_pointer node)
+		{
+			node_pointer sibling_node;
+			while (node != this->_root && node->color == BLACK)
+			{
+				if (is_left_son(node))
+				{
+					sibling_node = sibling(node);
+					// Case 1: node sibling is RED
+					// switch colors of sibling and parent
+					// and perform left rotation,
+					// transforming this into Cases 2, 3, or 4
+					// depending on their childrens' colors
+					if (sibling_node->color == RED)
+					{
+						sibling_node->color = BLACK;
+						node->parent->color = RED;
+						rotate_left(node->parent);
+						sibling_node = sibling(node);
+					}
+					// Case 2: both sibling of node AND childen of sibling are black
+					if (sibling_node->left_child->color == BLACK && sibling_node->right_child->color == BLACK)
+					{
+						sibling_node->color = RED;
+						node = node->parent;
+					}
+					else
+					{
+						// Case 3: only right child is black
+						// transforms into Case 4
+						if (sibling_node->right_child->color == BLACK)
+						{
+							sibling_node->left_child->color = BLACK;
+							sibling_node->color = RED;
+							rotate_right(sibling_node);
+							sibling_node = sibling(node);
+						}
+						// Case 4: right child is red
+						sibling_node->color = node->parent->color;
+						node->parent->color = BLACK;
+						sibling_node->right_child->color = BLACK;
+						rotate_left(node->parent);
+						node = this->_root;
+					}
+				}
+				else // same as before, just for the right subtree
+				{
+					sibling_node = sibling(node);
+					if (sibling_node->color == RED)
+					{
+						sibling_node->color = BLACK;
+						node->parent->color = RED;
+						rotate_right(node->parent);
+						sibling_node = sibling(node);
+					}
+					if (sibling_node->right_child->color == BLACK && sibling_node->left_child->color == BLACK)
+					{
+						sibling_node->color = RED;
+						node = node->parent;
+					}
+					else
+					{
+						if (sibling_node->left_child->color == BLACK)
+						{
+							sibling_node->right_child->color = BLACK;
+							sibling_node->color = RED;
+							rotate_left(sibling_node);
+							sibling_node = sibling(node);
+						}
+						sibling_node->color = node->parent->color;
+						node->parent->color = BLACK;
+						sibling_node->left_child->color = BLACK;
+						rotate_right(node->parent);
+						node = this->_root;
+					}
+				}
+			}
+			node->color = BLACK;
+		}
+
 
 	};
 
