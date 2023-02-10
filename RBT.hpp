@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/10 13:48:06 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/10 14:58:42 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ namespace ft
 		ConstNode *right_child;
 		bool color;
 	};
+
 
 	template <typename T, typename Compare, typename Alloc = std::allocator<T> >
 	class RBT
