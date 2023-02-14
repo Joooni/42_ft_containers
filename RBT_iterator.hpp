@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:40 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/10 14:41:09 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/14 10:56:26 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ class RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 
 		RBT_iterator operator++(int)
 		{
-			RBT_iterator temp = *this;
+			RBT_iterator temp(*this);
 			++(*this);
 			return (temp);
 		}
@@ -133,29 +133,29 @@ class RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 
 		RBT_iterator operator--(int)
 		{
-			RBT_iterator temp = *this;
+			RBT_iterator temp(*this);
 			--(*this);
 			return (temp);
 		}
 
 		bool operator==(RBT_iterator<T, Tree> rhs)
 		{
-			return (this->base() == rhs.base());
+			return ((this->base() == rhs.base()));
 		}
 
 		bool operator==(const_RBT_iterator<T, Tree> rhs) const
 		{
-			return (this->base() == rhs.base());
+			return ((this->base() == rhs.base()));
 		}
 
 		bool operator!=(RBT_iterator<T, Tree> rhs)
 		{
-			return (this->base() != rhs.base());
+			return ((this->base() != rhs.base()));
 		}
 
 		bool operator!=(const_RBT_iterator<T, Tree> rhs) const
 		{
-			return (this->base() != rhs.base());
+			return ((this->base() != rhs.base()));
 		}
 
 		T *getEnd() const
@@ -207,7 +207,7 @@ class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 
 		const_RBT_iterator(): _current(0), _end(0), _rend(0) {}
 		const_RBT_iterator(T *curr, T *end, T *rend):  _current(curr), _end(end), _rend(rend) {}
-		const_RBT_iterator(const const_RBT_iterator &rhs): _current(rhs._current), _end(rhs._end), _rend(rhs._current) {}
+		const_RBT_iterator(const const_RBT_iterator &rhs): _current(rhs._current), _end(rhs._end), _rend(rhs._rend) {}
 		const_RBT_iterator(const RBT_iterator<T, Tree> &rhs) { *this = rhs;}
 		template <typename differentTree>
 		const_RBT_iterator(const RBT_iterator<T, differentTree> &rhs):  _current(rhs.base()), _end(rhs.getEnd()), _rend(rhs.getRend()) {}
@@ -263,7 +263,7 @@ class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 
 		const_RBT_iterator operator++(int)
 		{
-			const_RBT_iterator temp = *this;
+			const_RBT_iterator temp(*this);
 			++(*this);
 			return (temp);
 		}
@@ -296,29 +296,29 @@ class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 
 		const_RBT_iterator operator--(int)
 		{
-			const_RBT_iterator temp = *this;
+			const_RBT_iterator temp(*this);
 			--(*this);
 			return (temp);
 		}
 
 		bool operator==(RBT_iterator<T, Tree> rhs)
 		{
-			return (this->base() == rhs.base());
+			return ((this->base() == rhs.base()));
 		}
 
 		bool operator!=(RBT_iterator<T, Tree> rhs)
 		{
-			return (this->base() != rhs.base());
+			return ((this->base() != rhs.base()));
 		}
 
 		bool operator==(const_RBT_iterator<T, Tree> rhs) const
 		{
-			return (this->base() == rhs.base());
+			return ((this->base() == rhs.base()));
 		}
 
 		bool operator!=(const_RBT_iterator<T, Tree> rhs) const
 		{
-			return (this->base() != rhs.base());
+			return ((this->base() != rhs.base()));
 		}
 
 		T *getEnd() const

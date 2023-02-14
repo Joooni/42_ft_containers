@@ -6,17 +6,18 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 10:39:36 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/10 13:43:15 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/14 10:40:19 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_HPP
 #define MAP_HPP
 #include "RBT.hpp"
+#include "RBT_iterator.hpp"
 #include "utils.hpp"
 #include <memory>
 // checking out STL
-#include <map>
+// #include <map>
 // #include <bits/stl_tree.h>
 // #include <bits/stl_map.h>
 
@@ -48,7 +49,6 @@ class map
 		typedef typename ft::reverse_iterator<const_iterator>						 const_reverse_iterator;
 
 	private:
-
 		ft::RBT<value_type, key_compare, allocator_type>	_tree;
 		key_compare											_compare;
 		allocator_type										_allocator;
@@ -59,7 +59,8 @@ class map
 		// https://en.cppreference.com/w/cpp/container/map/value_compare for details
 		class value_compare : std::binary_function<value_type, value_type, bool>
 		{
-				friend class map;
+			friend class map;
+
 			protected:
 				Compare comp;
 				value_compare (Compare c) : comp(c) {}
