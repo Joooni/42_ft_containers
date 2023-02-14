@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 09:32:51 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/14 10:30:54 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/14 14:09:42 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ namespace ft
 		protected: //STL has this as protected, why?
 			container_type c;
 
-	}
+	};
 
 	template <class T, class Container>
 	bool operator==(const stack<T, Container> &lhs, const stack<T, Container> &rhs)
