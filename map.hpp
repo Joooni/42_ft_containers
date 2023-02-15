@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 10:39:36 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/14 14:07:46 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/15 15:48:57 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,7 @@ class map
 		// inserts value
 		pair<iterator, bool> insert(const value_type &value)
 		{
-			bool temp_bool = ((this->_tree.find_node(value)) == this->_tree.getEnd());
+			bool temp_bool = (this->_tree.find_node(value)) == this->_tree.getEnd();
 			iterator temp_iter = iterator(this->_tree.insert(value), this->_tree.getEnd(), this->_tree.getRend());
 			return (ft::make_pair<iterator, bool>(temp_iter, temp_bool));
 		}
@@ -237,8 +237,8 @@ class map
 		template <class InputIt>
 		void insert(InputIt first, InputIt last)
 		{
-			for (; first != last; ++first)
-				this->_tree.insert(*first);
+			while (first != last)
+				this->_tree.insert(*(first++));
 		}
 
 		iterator erase(iterator pos)
@@ -269,7 +269,7 @@ class map
 
 		size_type count(const key_type &key) const
 		{
-			return ((this->find(key) == this->end()) ? 1 : 0);
+			return ((this->find(key) == this->end()) ? 0 : 1);
 		}
 
 		iterator find (const key_type& key)

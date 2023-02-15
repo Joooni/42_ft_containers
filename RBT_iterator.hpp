@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:40 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/14 10:56:26 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/15 14:16:50 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ class RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 			}
 			else
 			{
-				while (temp->parent && temp == temp->parent->right_child)
+				while (temp->parent && temp == temp->parent->left_child)
 					temp = temp->parent;
 				if (temp->parent)
 					temp = temp->parent;
@@ -283,7 +283,7 @@ class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 			}
 			else
 			{
-				while (temp->parent && temp == temp->parent->right_child)
+				while (temp->parent && temp == temp->parent->left_child)
 					temp = temp->parent;
 				if (temp->parent)
 					temp = temp->parent;

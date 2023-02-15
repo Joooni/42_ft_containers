@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/14 10:54:28 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/15 16:00:17 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,10 +186,13 @@ namespace ft
 		*/
 		node_pointer insert(value_type val)
 		{
+			std::cout << "RBT INSERT" << std::endl;
 			node_pointer already_found = find_node(val);
 			if (already_found != this->_end)
 				return (already_found);
+			std::cout << "AFTER FIND" << std::endl;
 			node_pointer new_node = this->_nodeAlloc.allocate(1);
+			node_pointer original_node = new_node;
 			new_node->content = this->_allocator.allocate(1);
 			this->_allocator.construct(new_node->content, val);
 			this->_size++;
@@ -197,25 +200,29 @@ namespace ft
 			new_node->left_child = NULL;
 			new_node->right_child = NULL;
 			// Case 1
+			std::cout << "BEFORE CASES" << std::endl;
 			if (this->_root == this->_end)
 			{
+				std::cout << "CASE 1" << std::endl;
 				new_node->color = BLACK;
 				new_node->parent = NULL;
 				this->_root = new_node;
-				this->_end->parent = new_node;
-				this->_rend->parent = new_node;
+				this->_end->parent = this->_root;
+				this->_rend->parent = this->_root;
 				return (new_node);
 			}
 			new_node->color = RED;
 			BST_insertion(new_node);
 			node_pointer check_node = new_node;
 			// Case 3 (2 immediately not fulfills while condition)
+			std::cout << "CASE 2" << std::endl;
 			while (check_node->parent && check_node->parent->color == RED)
 			{
 				node_pointer grandparent = check_node->parent->parent;
 				// Case 3.1: both parent and parents sibling are red
 				if (grandparent->left_child && grandparent->right_child && grandparent->left_child->color == RED && grandparent->right_child->color == RED)
 				{
+					std::cout << "CASE 3.1" << std::endl;
 					recolor(grandparent->left_child);
 					recolor(grandparent->right_child);
 					if (grandparent != this->_root)
@@ -225,14 +232,17 @@ namespace ft
 				// Case 3.2
 				else
 				{
+					std::cout << "CASE 3.2" << std::endl;
 					// RL or LL
 					if (check_node->parent == grandparent->right_child)
 					{
 						if (check_node == check_node->parent->left_child)
 						{
+								std::cout << "CASE 3.2.1" << std::endl;
 							check_node = check_node->parent;
 							rotate_right(check_node);
 						}
+						std::cout << "CASE 3.2.2" << std::endl;
 						rotate_left(check_node->parent->parent);
 						recolor(check_node->parent);
 						recolor(check_node->parent->left_child);
@@ -242,9 +252,11 @@ namespace ft
 					{
 						if (check_node == check_node->parent->right_child)
 						{
+							std::cout << "CASE 3.2.3" << std::endl;
 							check_node = check_node->parent;
 							rotate_left(check_node);
 						}
+						std::cout << "CASE 3.2.4" << std::endl;
 						rotate_right(check_node->parent->parent);
 						recolor(check_node->parent);
 						recolor(check_node->parent->right_child);
@@ -253,7 +265,7 @@ namespace ft
 			}
 			this->_end->parent = this->max(this->_root);
 			this->_rend->parent = this->min(this->_root);
-			return (check_node);
+			return (original_node);
 		}
 
 		/**
@@ -271,7 +283,9 @@ namespace ft
 			while (find_node)
 			{
 				if (k == get_key(find_node->content))
+				{
 					return (find_node);
+				}
 				else if (this->_compare(k, get_key(find_node->content)))
 				{
 					if (find_node->left_child)
@@ -638,14 +652,14 @@ namespace ft
 			{
 				std::cout << prefix;
 
-				std::cout << (isLeft ? "L├───" : "R└───" );
+				std::cout << (isLeft ? "├───" : "└───" );
 
 				// print the value of the node
-				std::cout << (node->color == BLACK ? COLOR_BRIGHT_DARK_GREY : COLOR_BRIGHT_RED ) << (*node->content).first << END << std::endl;
+				std::cout << (node->color == BLACK ? COLOR_BRIGHT_DARK_GREY : COLOR_BRIGHT_RED ) << (*node->content).first << "/" << (*node->content).second << END << std::endl;
 
 				// enter the next tree level - left and right branch
-				printRBT( prefix + (isLeft ? " │   " : "    "), node->left_child, true);
-				printRBT( prefix + (isLeft ? " │   " : "    "), node->right_child, false);
+				printRBT( prefix + (isLeft ? "│   " : "    "), node->left_child, true);
+				printRBT( prefix + (isLeft ? "│   " : "    "), node->right_child, false);
 			}
 		}
 
@@ -679,6 +693,7 @@ namespace ft
 
 		void BST_insertion(node_pointer node)
 		{
+			std::cout << "BST INSERT" << std::endl;
 			node_pointer current = this->_root;
 			while (current)
 			{

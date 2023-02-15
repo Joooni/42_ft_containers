@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 13:15:39 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/07 10:48:12 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/15 14:05:03 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,42 @@ template<typename key, typename value>
 key get_key(ft::pair<key, value> *pair)
 {
 	return (pair->first);
+}
+
+template <class T1, class T2>
+bool operator==(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+{
+	return (lhs.first==rhs.first && lhs.second==rhs.second);
+}
+
+template <class T1, class T2>
+bool operator!=(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+{
+	return (!(lhs==rhs));
+}
+
+template <class T1, class T2>
+bool operator<(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+{
+	return (lhs.first<rhs.first || (!(rhs.first<lhs.first) && lhs.second<rhs.second));
+}
+
+template <class T1, class T2>
+bool operator<=(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+{
+	return (!(rhs<lhs));
+}
+
+template <class T1, class T2>
+bool operator>(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+{
+	return rhs<lhs;
+}
+
+template <class T1, class T2>
+bool operator>=(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+{
+	return !(lhs<rhs);
 }
 
 } // ft namespace

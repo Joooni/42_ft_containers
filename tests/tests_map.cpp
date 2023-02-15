@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tests_map.cpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/15 09:16:57 by jsubel            #+#    #+#             */
+/*   Updated: 2023/02/15 09:16:58 by jsubel           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../map.hpp"
 #include <functional>
 #include <time.h>
@@ -17,10 +29,8 @@ int main(void)
 
 	ft::map<char, int> mp(lst.begin(), lst.end());
 	mp.printTree();
-	ft::map<char, int>::iterator it_ = mp.begin();
-	ft::map<char, int>::reverse_iterator it(it_);
-	ft::map<char, int>::reverse_iterator ite;
 	mp.clear();
+	std::cout << DELIM << "cleared tree" << DELIM << std::endl;
 	mp.printTree();
 	// mp.erase('h');
 	// std::cout << DELIM << "Test 2" << DELIM << std::endl;
