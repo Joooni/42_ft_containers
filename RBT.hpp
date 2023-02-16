@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/15 16:00:17 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/16 12:25:37 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,6 @@
 
 #include <sstream>
 
-#define SSTR(x) static_cast<std::ostringstream &>(           \
-					(std::ostringstream() << std::dec << x)) \
-					.str()
-
 namespace ft
 {
 
@@ -50,11 +46,11 @@ namespace ft
 	{
 	public:
 		ConstNode(Node<T> node) : content(node->content), parent(node->parent), left_child(node->left_child), right_child(node->right_child), color(node->color) {}
-		const T *content;
-		ConstNode *parent;
-		ConstNode *left_child;
-		ConstNode *right_child;
-		bool color;
+		T * const	content;
+		ConstNode	*parent;
+		ConstNode	*left_child;
+		ConstNode	*right_child;
+		bool		color;
 	};
 
 
@@ -62,30 +58,30 @@ namespace ft
 	class RBT
 	{
 	public:
-		typedef T value_type;
-		typedef size_t size_type;
-		typedef ptrdiff_t difference_type;
-		typedef Compare key_compare;
+		typedef T			value_type;
+		typedef size_t		size_type;
+		typedef ptrdiff_t	difference_type;
+		typedef Compare		key_compare;
 
-		typedef Alloc allocator_type;
-		typedef Node<T> node;
-		typedef Node<T> *node_pointer;
-		typedef Node<const T> *const_node_pointer;
+		typedef Alloc			allocator_type;
+		typedef Node<T>			node;
+		typedef Node<T>			*node_pointer;
+		typedef Node<const T>	*const_node_pointer;
 
 		typedef RBT<value_type, key_compare, allocator_type> tree_type;
 
-		typedef typename allocator_type::reference reference;
-		typedef typename allocator_type::const_reference const_reference;
-		typedef typename allocator_type::pointer pointer;
-		typedef typename allocator_type::const_pointer const_pointer;
-		typedef typename ft::RBT_iterator<node, tree_type> iterator;
-		typedef typename ft::const_RBT_iterator<node, tree_type> const_iterator;
+		typedef typename allocator_type::reference					reference;
+		typedef typename allocator_type::const_reference			const_reference;
+		typedef typename allocator_type::pointer					pointer;
+		typedef typename allocator_type::const_pointer				const_pointer;
+		typedef typename ft::RBT_iterator<node, tree_type>			iterator;
+		typedef typename ft::const_RBT_iterator<node, tree_type>	const_iterator;
+
 
 		RBT(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
 		{
 			this->_compare = comp;
 			this->_allocator = alloc;
-			this->_size = 0;
 
 			// make empty end
 			this->_end = this->_nodeAlloc.allocate(1);
@@ -106,6 +102,7 @@ namespace ft
 			this->_rend->right_child = NULL;
 
 			this->_root = this->_end;
+			this->_size = 0;
 		}
 
 		RBT(const RBT &rhs)
@@ -144,7 +141,6 @@ namespace ft
 		// then, calls itself on the newly created child
 		void copySubtree(node_pointer nodeDest, node_pointer nodeSrc)
 		{
-			std::cout << "inside copy subtree \n";
 			if (nodeSrc->left_child)
 			{
 				nodeDest->left_child = this->_nodeAlloc.allocate(1);
@@ -186,11 +182,9 @@ namespace ft
 		*/
 		node_pointer insert(value_type val)
 		{
-			std::cout << "RBT INSERT" << std::endl;
 			node_pointer already_found = find_node(val);
 			if (already_found != this->_end)
 				return (already_found);
-			std::cout << "AFTER FIND" << std::endl;
 			node_pointer new_node = this->_nodeAlloc.allocate(1);
 			node_pointer original_node = new_node;
 			new_node->content = this->_allocator.allocate(1);
@@ -200,10 +194,8 @@ namespace ft
 			new_node->left_child = NULL;
 			new_node->right_child = NULL;
 			// Case 1
-			std::cout << "BEFORE CASES" << std::endl;
 			if (this->_root == this->_end)
 			{
-				std::cout << "CASE 1" << std::endl;
 				new_node->color = BLACK;
 				new_node->parent = NULL;
 				this->_root = new_node;
@@ -213,53 +205,42 @@ namespace ft
 			}
 			new_node->color = RED;
 			BST_insertion(new_node);
-			node_pointer check_node = new_node;
 			// Case 3 (2 immediately not fulfills while condition)
-			std::cout << "CASE 2" << std::endl;
-			while (check_node->parent && check_node->parent->color == RED)
+			while (new_node->parent && new_node->parent->color == RED)
 			{
-				node_pointer grandparent = check_node->parent->parent;
 				// Case 3.1: both parent and parents sibling are red
-				if (grandparent->left_child && grandparent->right_child && grandparent->left_child->color == RED && grandparent->right_child->color == RED)
+				if (new_node->parent->parent->left_child && new_node->parent->parent->right_child && new_node->parent->parent->left_child->color == RED && new_node->parent->parent->right_child->color == RED)
 				{
-					std::cout << "CASE 3.1" << std::endl;
-					recolor(grandparent->left_child);
-					recolor(grandparent->right_child);
-					if (grandparent != this->_root)
-						recolor(grandparent);
-					check_node = grandparent;
+					if (new_node->parent->parent != this->_root)
+						recolor(new_node->parent->parent);
+					recolor(new_node->parent->parent->left_child);
+					recolor(new_node->parent->parent->right_child);
+					new_node = new_node->parent->parent;
 				}
-				// Case 3.2
-				else
+				else // Case 3.2
 				{
-					std::cout << "CASE 3.2" << std::endl;
 					// RL or LL
-					if (check_node->parent == grandparent->right_child)
+					if (new_node->parent == new_node->parent->parent->right_child)
 					{
-						if (check_node == check_node->parent->left_child)
+						if (new_node == new_node->parent->left_child)
 						{
-								std::cout << "CASE 3.2.1" << std::endl;
-							check_node = check_node->parent;
-							rotate_right(check_node);
+							new_node = new_node->parent;
+							rotate_right(new_node);
 						}
-						std::cout << "CASE 3.2.2" << std::endl;
-						rotate_left(check_node->parent->parent);
-						recolor(check_node->parent);
-						recolor(check_node->parent->left_child);
+						rotate_left(new_node->parent->parent);
+						recolor(new_node->parent);
+						recolor(new_node->parent->left_child);
 					}
-					// LR or RR
-					else
+					else // LR or RR
 					{
-						if (check_node == check_node->parent->right_child)
+						if (new_node == new_node->parent->right_child)
 						{
-							std::cout << "CASE 3.2.3" << std::endl;
-							check_node = check_node->parent;
-							rotate_left(check_node);
+							new_node = new_node->parent;
+							rotate_left(new_node);
 						}
-						std::cout << "CASE 3.2.4" << std::endl;
-						rotate_right(check_node->parent->parent);
-						recolor(check_node->parent);
-						recolor(check_node->parent->right_child);
+						rotate_right(new_node->parent->parent);
+						recolor(new_node->parent);
+						recolor(new_node->parent->right_child);
 					}
 				}
 			}
@@ -312,7 +293,9 @@ namespace ft
 			while (find_node)
 			{
 				if (get_key(&val) == get_key(find_node->content))
+				{
 					return (find_node);
+				}
 				else if (this->_compare(get_key(&val), get_key(find_node->content)))
 				{
 					if (find_node->left_child)
@@ -593,17 +576,17 @@ namespace ft
 
 
 	private:
-		node_pointer _root;
-		node_pointer _end;
-		node_pointer _rend;
-		allocator_type _allocator;
-		std::allocator< Node<T> > _nodeAlloc;
-		key_compare _compare;
-		size_type _size;
+		node_pointer				_root;
+		node_pointer				_end;
+		node_pointer				_rend;
+		allocator_type				_allocator;
+		std::allocator< Node<T> >	_nodeAlloc;
+		key_compare					_compare;
+		size_type					_size;
 
 
-		// passed node is the root of the subtree to be rotated and thus the initial parent
-		// pivot is the child that takes the root node's place
+		// // passed node is the root of the subtree to be rotated and thus the initial parent
+		// // pivot is the child that takes the root node's place
 		void rotate_left(node_pointer node)
 		{
 			node_pointer pivot = node->right_child;
@@ -631,9 +614,9 @@ namespace ft
 			if (!node->parent)
 				this->_root = pivot;
 			else if (is_right_son(node))
-				node->parent->left_child = pivot;
-			else
 				node->parent->right_child = pivot;
+			else
+				node->parent->left_child = pivot;
 			pivot->right_child = node;
 			node->parent = pivot;
 		}
@@ -693,7 +676,6 @@ namespace ft
 
 		void BST_insertion(node_pointer node)
 		{
-			std::cout << "BST INSERT" << std::endl;
 			node_pointer current = this->_root;
 			while (current)
 			{

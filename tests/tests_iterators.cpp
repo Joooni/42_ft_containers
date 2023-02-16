@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 08:45:13 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/15 12:20:13 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/16 10:15:07 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,13 @@
 #include <list>
 #include <stdlib.h>
 
-#define TESTHEAD		std::cout << COLOR_YELLOW << std::string(20, '~') << "Test " << nbr_test++ << std::string(20, '~') << END << std::endl;
 
 
 
 int main(void)
 {
 	int nbr_test = 1;
-	TESTHEAD;
+	TESTHEAD(nbr_test++);
 	{
 		std::cout << COLOR_YELLOW << COLOR_FAINT << "random access iterator demonstrated on a vector" << END << std::endl;
 		ft::vector<int> vec;

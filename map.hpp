@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 10:39:36 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/15 15:48:57 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/16 11:33:08 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,7 +238,10 @@ class map
 		void insert(InputIt first, InputIt last)
 		{
 			while (first != last)
-				this->_tree.insert(*(first++));
+			{
+				this->_tree.insert(*first);
+				++first;
+			}
 		}
 
 		iterator erase(iterator pos)

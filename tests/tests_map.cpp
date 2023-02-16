@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 09:16:57 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/15 09:16:58 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/16 10:29:51 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,33 +16,37 @@
 #include <list>
 #include <stdlib.h>
 #include "../vector.hpp"
-
-#define DELIM	std::string(10, '~')
+#include "test_utils.hpp"
 
 int main(void)
 {
-	std::list< ft::pair<const char, int> > lst;
-	unsigned int lst_size = 26;
-	for (unsigned int i = 0; i < lst_size; ++i)
-		lst.push_back(ft::pair<const char, int>('a' + i, (i + 1) * 7));
+	int nbr_tests = 1;
+	{
+		TESTHEAD(nbr_tests++);
+		std::list< ft::pair<int, int> > lst;
+		unsigned int lst_size = 26;
+		for (unsigned int i = 0; i < lst_size; ++i)
+			lst.push_back(ft::pair<int, int>(lst_size - i, i));
 
-
-	ft::map<char, int> mp(lst.begin(), lst.end());
-	mp.printTree();
-	mp.clear();
-	std::cout << DELIM << "cleared tree" << DELIM << std::endl;
-	mp.printTree();
-	// mp.erase('h');
-	// std::cout << DELIM << "Test 2" << DELIM << std::endl;
+		ft::map<int, int> mp(lst.begin(), lst.end());
+		// mp.printTree();
+		// mp.clear();
+		// std::cout << "cleared tree" << std::endl;
+		// mp.printTree();
+	}
 	// {
-	// 	ft::RBT<int, std::less<int> >	RBTommy;
-	// 	srand(time(NULL));
-	// 	for (int i = 0; i < 20; i++)
+	// 	std::list<int, int> lst;
+	// 	unsigned int lst_size = 10;
+	// 	for (unsigned int i = 0; i < lst_size; ++i)
 	// 	{
-	// 		int nbr = rand() % 47;
-	// 		std::cout << nbr <<std::endl;
-	// 		RBTommy.insert(nbr);
+	// 		lst.push_back(T3(lst_size - i, i));
+	// 		std::cout << "key: " << lst_size - i << "\tval: " << i << std::endl;
 	// 	}
-	// 	RBTommy.printTree();
+	// 	std::cout << "before range construction" << std::endl;
+	// 	ft::map<int, int> mp(lst.begin(), lst.end());
+	// 	std::cout << "after range construction" << std::endl;
+	// 	ft::map<int, int>::iterator it = mp.begin(), ite = mp.end();
+	// 	std::cout << "after iterator creation" << std::endl;
+	// 	mp.printTree();
 	// }
 }

@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:40 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/15 14:16:50 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/16 12:54:01 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,7 @@ template<typename T, typename Tree>
 class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 {
 	public:
-		typedef typename Tree::value_type 															value_type;
+		typedef const typename Tree::value_type 													value_type;
 		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::iterator_category	iterator_category;
 		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::difference_type		difference_type;
 		typedef typename ft::iterator<bidirectional_iterator_tag, value_type>::reference			reference;
@@ -208,7 +208,10 @@ class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 		const_RBT_iterator(): _current(0), _end(0), _rend(0) {}
 		const_RBT_iterator(T *curr, T *end, T *rend):  _current(curr), _end(end), _rend(rend) {}
 		const_RBT_iterator(const const_RBT_iterator &rhs): _current(rhs._current), _end(rhs._end), _rend(rhs._rend) {}
-		const_RBT_iterator(const RBT_iterator<T, Tree> &rhs) { *this = rhs;}
+		const_RBT_iterator(const RBT_iterator<T, Tree> &rhs)
+		{
+			*this = rhs;
+		}
 		template <typename differentTree>
 		const_RBT_iterator(const RBT_iterator<T, differentTree> &rhs):  _current(rhs.base()), _end(rhs.getEnd()), _rend(rhs.getRend()) {}
 		template <typename differentTree>
@@ -222,9 +225,27 @@ class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 			return (*this);
 		}
 
+		const_RBT_iterator &operator=(const RBT_iterator &rhs)
+		{
+			this->_current = rhs._current;
+			this->_end = rhs._end;
+			this->_rend = rhs._rend;
+			return (*this);
+		}
+
 		T *base() const
 		{
 			return (this->_current);
+		}
+
+		T *getEnd() const
+		{
+			return (this->_end);
+		}
+
+		T *getRend() const
+		{
+			return (this->_rend);
 		}
 
 		//-*-*-*-*-*-*-*-*-*-//
@@ -321,26 +342,16 @@ class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 			return ((this->base() != rhs.base()));
 		}
 
-		T *getEnd() const
-		{
-			return (this->_end);
-		}
-
-		T *getRend() const
-		{
-			return (this->_rend);
-		}
-
 		//-*-*-*-*-*-*-*-*-*-//
 		//  pointer and ref  //
 		//-*-*-*-*-*-*-*-*-*-//
 
-		reference operator*() const
+		const reference operator*() const
 		{
 			return (*(this->_current)->content);
 		}
 
-		pointer operator->() const
+		const pointer operator->() const
 		{
 			return (this->_current->content);
 		}
