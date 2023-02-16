@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 11:12:40 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/16 12:54:01 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/16 14:17:13 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,11 +225,11 @@ class const_RBT_iterator: public iterator<bidirectional_iterator_tag, T>
 			return (*this);
 		}
 
-		const_RBT_iterator &operator=(const RBT_iterator &rhs)
+		const_RBT_iterator &operator=(const RBT_iterator<T, Tree> &rhs)
 		{
-			this->_current = rhs._current;
-			this->_end = rhs._end;
-			this->_rend = rhs._rend;
+			this->_current = rhs.base();
+			this->_end = rhs.getEnd();
+			this->_rend = rhs.getRend();
 			return (*this);
 		}
 

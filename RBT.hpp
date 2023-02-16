@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/16 12:25:37 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/16 17:22:58 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -338,6 +338,7 @@ namespace ft
 
 		void erase(value_type &val)
 		{
+			std::cout << "ERASE VALUE TYPE" << std::endl;
 			node_pointer node = this->find_node(val);
 			if (node == this->_end || node == this->_rend)
 				return ;
@@ -352,6 +353,7 @@ namespace ft
 		template<typename Key>
 		size_type erase (Key &key)
 		{
+			std::cout << "ERASE KEY" << std::endl;
 			node_pointer node = this->find_node<Key>(key);
 			if (node == this->_end || node == this->_rend)
 				return (0);
@@ -372,8 +374,10 @@ namespace ft
 		*/
 		void erase(node_pointer node)
 		{
+			std::cout << "ERASE NODE" << std::endl;
 			if (!this->_root->left_child && !this->_root->right_child && this->_root != this->_end)
 			{
+				std::cout << "ERASE ROOT IF IT IS THE ONLY NODE" << std::endl;
 				deleteNode(this->_root);
 				this->_root = this->_end;
 				this->_size--;
@@ -385,16 +389,19 @@ namespace ft
 
 			if (!node->left_child)
 			{
+				std::cout << "CASE 2 RIGHT NODE" << std::endl;
 				temp = node->right_child;
 				transplant(node, node->right_child);
 			}
 			else if (!node->right_child)
 			{
+				std::cout << "CASE 2 LEFT NODE" << std::endl;
 				temp = node->left_child;
 				transplant(node, node->left_child);
 			}
 			else
 			{
+				std::cout << "CASE 3" << std::endl;
 				moved_node = successor(node);
 				node_originalcolor = moved_node->color;
 				temp = moved_node->right_child;
@@ -402,14 +409,18 @@ namespace ft
 					temp->parent = moved_node;
 				else
 				{
+					std::cout << "INSIDE ELSE" << std::endl;
 					transplant(moved_node, moved_node->right_child);
 					moved_node->right_child = temp->right_child;
 					moved_node->right_child->parent = moved_node;
 				}
+				std::cout << "BEFORE TRANSPLANT 2" << std::endl;
 				transplant(node, moved_node);
+				std::cout << "AFTER TRANSPLANT 2" << std::endl;
 				moved_node->left_child = temp->left_child;
 				moved_node->left_child->parent = moved_node;
 				moved_node->color = temp->color;
+				std::cout << "END OF ELSE" << std::endl;
 			}
 			if (node_originalcolor == BLACK)
 				deleteFix(temp);
@@ -711,12 +722,23 @@ namespace ft
 		// subroutine to replace one subtree as a child of its parent with another subtree
 		void transplant(node_pointer node, node_pointer swap)
 		{
+			std::cout << "TRANSPLANT" << std::endl;
 			if (node == this->_root)
+			{
 				this->_root = swap;
+				std::cout << "\tIF" << std::endl;
+			}
 			else if (is_left_son(node))
+			{
 				node->parent->left_child = swap;
+				std::cout << "\tELSE IF" << std::endl;
+			}
 			else
+			{
 				node->parent->right_child = swap;
+				std::cout << "\tELSE" << std::endl;
+			}
+			std::cout << "SWAP->PARENT TO NODE->PARENT" << std::endl;
 			swap->parent = node->parent;
 		}
 

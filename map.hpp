@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 10:39:36 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/16 11:33:08 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/16 14:35:14 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -371,7 +371,7 @@ bool operator<(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare
 template<class Key, class T, class Compare, class Alloc>
 bool operator<=(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
 {
-	return (!(lhs < rhs));
+	return (!(rhs < lhs));
 }
 
 template<class Key, class T, class Compare, class Alloc>
@@ -383,7 +383,7 @@ bool operator>(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare
 template<class Key, class T, class Compare, class Alloc>
 bool operator>=(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
 {
-	return (!(rhs < lhs));
+	return (!(lhs < rhs));
 }
 
 } // namespace ft
