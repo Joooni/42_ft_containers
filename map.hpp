@@ -244,7 +244,7 @@ class map
 			}
 		}
 
-		iterator erase(iterator pos)
+		void erase(iterator pos)
 		{
 			iterator temp(pos);
 			++temp;
@@ -252,7 +252,7 @@ class map
 			return (temp);
 		}
 
-		iterator erase(iterator first, iterator last)
+		void erase(iterator first, iterator last)
 		{
 			map<key_type, mapped_type> temp(first, last);
 			for (iterator it = temp.begin(); it != temp.end(); ++it)
