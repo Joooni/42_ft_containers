@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/27 11:08:38 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/27 14:09:27 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -738,21 +738,22 @@ namespace ft
 			node->color = !node->color;
 		}
 
-
 		void printRBT(const std::string& prefix, const node_pointer node, bool isLeft) const
 		{
 			if( node != NULL )
 			{
+				std::cout << prefix;
 
+				std::cout << (isLeft ? "├───" : "└───" );
 
 				// print the value of the node
+				std::cout << (node->color == BLACK ? COLOR_BRIGHT_DARK_GREY : COLOR_BRIGHT_RED ) << (*node->content).first << "/" << (*node->content).second << END << std::endl;
 
 				// enter the next tree level - left and right branch
 				printRBT( prefix + (isLeft ? "│   " : "    "), node->left_child, true);
 				printRBT( prefix + (isLeft ? "│   " : "    "), node->right_child, false);
 			}
 		}
-
 
 		void clearSubtree(node_pointer node)
 		{

@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 12:01:31 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/27 11:56:40 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/27 14:44:49 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::
 }
 
 template<typename T>
-void compareVectorsIndepth(std::vector<T> v, std::vector<T> v2)
+void compareVectorsIndepth(std::vector<T> v1, std::vector<T> v2)
 {
-	int i = v.size();
+	int i = v1.size();
 	int j = v2.size();
 	std::cout << std::endl;
 
@@ -37,19 +37,19 @@ void compareVectorsIndepth(std::vector<T> v, std::vector<T> v2)
 	int n = std::min(i, j);
 	for (i = 0; i < n; i++)
 	{
-		if (v[i] != v2[i])
-			std::cout << "Index: " << i << " \x1B[31m" << v[i] << " : " << v2[i] <<  "\033[0m"<< std::endl;
+		if (v1[i] != v2[i])
+			std::cout << "Index: " << i << " \x1B[31m" << v1[i] << " : " << v2[i] <<  "\033[0m"<< std::endl;
 	}
 }
 template<typename T>
-void compareVectors(std::vector<T> v, std::vector<T> v2)
+void compareVectors(std::vector<T> v1, std::vector<T> v2)
 {
-	if (v == v2)
+	if (v1 == v2)
 		std::cout << "\x1B[32m" << "OK" <<  "\033[0m";
 	else
 	{
 		std::cout << "\x1B[31m" << "KO" <<  "\033[0m";
-		compareVectorsIndepth<T>(v, v2);
+		compareVectorsIndepth<T>(v1, v2);
 	}
 }
 
