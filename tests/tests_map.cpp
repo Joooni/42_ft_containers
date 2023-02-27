@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 09:16:57 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/27 15:29:42 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/27 16:51:15 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "test_utils.hpp"
 #define MAP_STD		std::map<int, int>
 #define MAP_FT		ft::map<int, int>
-#define TIMESTART	gettimeofday(&start, NULL)
+#define TIMER_START	gettimeofday(&start, NULL)
 #define TIMER_STD	stdtime = gettime(start)
 #define TIMER_FT	fttime = gettime(start)
 
@@ -53,7 +53,7 @@ int main(void)
 		MAP_STD::const_reverse_iterator std_crit;
 		for (int i = 0, j = 0; i < 10; i++, j++)
 			std1.insert(std::make_pair(i, j));
-		TIMESTART;
+		TIMER_START;
 		std_it = std1.begin();
 		std_cit = std1.begin();
 		std_rit = std1.rbegin();
@@ -122,7 +122,7 @@ int main(void)
 		MAP_FT::const_reverse_iterator ft_crit;
 		for (int i = 0, j = 0; i < 10; i++, j++)
 			ft1.insert(ft::make_pair(i, j));
-		TIMESTART;
+		TIMER_START;
 		ft_it = ft1.begin();
 		ft_cit = ft1.begin();
 		ft_rit = ft1.rbegin();
@@ -198,7 +198,7 @@ int main(void)
 		MAP_STD std1;
 		for (int i = 0, j = 0; i < 10000; i++, j++)
 			std1.insert(std::make_pair(i, j));
-		TIMESTART;
+		TIMER_START;
 		MAP_STD std2(std1.begin(), std1.end());
 		MAP_STD std3(std2);
 		MAP_STD std4;
@@ -210,7 +210,7 @@ int main(void)
 		MAP_FT ft1;
 		for (int i = 0, j = 0; i < 10000; i++, j++)
 			ft1.insert(ft::make_pair(i, j));
-		TIMESTART;
+		TIMER_START;
 		MAP_FT ft2(ft1.begin(), ft1.end());
 		MAP_FT ft3(ft2);
 		MAP_FT ft4;
@@ -233,7 +233,7 @@ int main(void)
 		MAP_STD std1;
 		for (int i = 0, j = 0; i < 10000; i++, j++)
 			std1.insert(std::make_pair(i, j));
-		TIMESTART;
+		TIMER_START;
 		MAP_STD std2;
 		MAP_STD std3;
 		MAP_STD std4;
@@ -252,7 +252,7 @@ int main(void)
 		MAP_FT ft1;
 		for (int i = 0, j = 0; i < 10000; i++, j++)
 			ft1.insert(ft::make_pair(i, j));
-		TIMESTART;
+		TIMER_START;
 		MAP_FT ft2;
 		MAP_FT ft3;
 		MAP_FT ft4;
@@ -274,13 +274,14 @@ int main(void)
 	}
 	TESTHEAD(nbr_tests++)
 	{
+		std::cout << "Testing element access:" << std::endl;
 		std::vector<int> v1;
 		std::vector<int> v2;
 
 		MAP_STD std1;
 		for (int i = 0, j = 0; i < 26; i++, j++)
 			std1.insert(std::make_pair(i, j));
-		TIMESTART;
+		TIMER_START;
 		v1.push_back(std1.at(5));
 		v1.push_back(std1.at(8));
 		v1.push_back(std1.at(0));
@@ -304,7 +305,7 @@ int main(void)
 		MAP_FT ft1;
 		for (int i = 0, j = 0; i < 26; i++, j++)
 			ft1.insert(ft::make_pair(i, j));
-		TIMESTART;
+		TIMER_START;
 		v2.push_back(ft1.at(5));
 		v2.push_back(ft1.at(8));
 		v2.push_back(ft1.at(0));
@@ -329,6 +330,38 @@ int main(void)
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 
+	}
+	TESTHEAD(nbr_tests++)
+	{
+		std::cout << "Testing Capacity functions:" << std::endl;
+		std::vector<int> v1;
+		std::vector<int> v2;
+
+		MAP_STD std1;
+		MAP_STD std2;
+		for (int i = 0, j = 0; i < 20000; i++, j++)
+			std1.insert(std::make_pair(i, j));
+		TIMER_START;
+		v1.push_back(std1.empty());
+		v1.push_back(std1.size());
+		v1.push_back(std2.empty());
+		v1.push_back(std2.size());
+		TIMER_STD;
+
+		MAP_FT ft1;
+		MAP_FT ft2;
+		for (int i = 0, j = 0; i < 20000; i++, j++)
+			ft1.insert(ft::make_pair(i, j));
+		TIMER_START;
+		v2.push_back(ft1.empty());
+		v2.push_back(ft1.size());
+		v2.push_back(ft2.empty());
+		v2.push_back(ft2.size());
+		TIMER_FT;
+
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		compareVectors(v1, v2);
+		std::cout << std::endl;
 	}
 	TESTHEAD(nbr_tests++)
 	{
