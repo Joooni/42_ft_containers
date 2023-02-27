@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 09:16:57 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/27 12:02:26 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/27 13:58:47 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,54 @@ int main(void)
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
+	TESTHEAD(nbr_tests++)
+	{
+		std::cout << "Testing assignment operator" << std::endl;
+		std::vector<int> v1;
+		std::vector<int> v2;
+
+		MAP_STD std1;
+		for (int i = 0, j = 5; i < 10000; i++, j++)
+			std1.insert(std::make_pair(i, j));
+		gettimeofday(&start, NULL);
+		MAP_STD std2;
+		MAP_STD std3;
+		MAP_STD std4;
+		pushtoVector<MAP_STD>(&std1, &v1);
+		pushtoVector<MAP_STD>(&std2, &v1);
+		pushtoVector<MAP_STD>(&std3, &v1);
+		pushtoVector<MAP_STD>(&std4, &v1);
+		std2 = std1;
+		std4 = std3;
+		stdtime = gettime(start);
+		pushtoVector<MAP_STD>(&std1, &v1);
+		pushtoVector<MAP_STD>(&std2, &v1);
+		pushtoVector<MAP_STD>(&std3, &v1);
+		pushtoVector<MAP_STD>(&std4, &v1);
+
+		MAP_FT std1;
+		for (int i = 0, j = 5; i < 10000; i++, j++)
+			std1.insert(std::make_pair(i, j));
+		gettimeofday(&start, NULL);
+		MAP_FT std2;
+		MAP_FT std3;
+		MAP_FT std4;
+		pushtoVector<MAP_FT>(&std1, &v1);
+		pushtoVector<MAP_FT>(&std2, &v1);
+		pushtoVector<MAP_FT>(&std3, &v1);
+		pushtoVector<MAP_FT>(&std4, &v1);
+		std2 = std1;
+		std4 = std3;
+		fttime = gettime(start);
+		pushtoVector<MAP_FT>(&std1, &v1);
+		pushtoVector<MAP_FT>(&std2, &v1);
+		pushtoVector<MAP_FT>(&std3, &v1);
+		pushtoVector<MAP_FT>(&std4, &v1);
+
+
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		compareVectors(v1, v2);
+		std::cout << std::endl;
+	}
+
 }
