@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 10:39:36 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/16 14:35:14 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/27 11:38:12 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,7 +249,6 @@ class map
 			iterator temp(pos);
 			++temp;
 			this->_tree.erase(*pos);
-			return (temp);
 		}
 
 		void erase(iterator first, iterator last)
@@ -257,7 +256,6 @@ class map
 			map<key_type, mapped_type> temp(first, last);
 			for (iterator it = temp.begin(); it != temp.end(); ++it)
 				this->erase(it->first);
-			return (last);
 		}
 
 		size_type erase(const key_type &key)

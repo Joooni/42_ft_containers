@@ -6,47 +6,70 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 09:16:57 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/16 10:29:51 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/27 12:02:26 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../map.hpp"
 #include <functional>
-#include <time.h>
-#include <list>
+#include <vector>
+#include <map>
 #include <stdlib.h>
-#include "../vector.hpp"
 #include "test_utils.hpp"
+#define MAP_STD std::map<int, int>
+#define MAP_FT ft::map<int, int>
+
+template<typename map>
+void pushtoVector(map *mp, std::vector<int> *v)
+{
+	v->push_back(mp->size());
+	for (typename map::iterator it = mp->begin(); it != mp->end(); it++)
+	{
+		v->push_back(it->first);
+		v->push_back(it->second);
+	}
+	v->push_back(mp->size());
+}
 
 int main(void)
 {
 	int nbr_tests = 1;
+	t_timeval start;
+	int stdtime;
+	int fttime;
+	TESTHEAD(nbr_tests++);
 	{
-		TESTHEAD(nbr_tests++);
-		std::list< ft::pair<int, int> > lst;
-		unsigned int lst_size = 26;
-		for (unsigned int i = 0; i < lst_size; ++i)
-			lst.push_back(ft::pair<int, int>(lst_size - i, i));
+		std::cout << "\nTesting map constructors (insertion one by one, by range, copy, empty):" << std::endl;
+		std::vector<int> v1;
+		std::vector<int> v2;
 
-		ft::map<int, int> mp(lst.begin(), lst.end());
-		// mp.printTree();
-		// mp.clear();
-		// std::cout << "cleared tree" << std::endl;
-		// mp.printTree();
+		MAP_STD std1;
+		for (int i = 0, j = 5; i < 10000; i++, j++)
+			std1.insert(std::make_pair(i, j));
+		gettimeofday(&start, NULL);
+		MAP_STD std2(std1.begin(), std1.end());
+		MAP_STD std3(std2);
+		MAP_STD std4;
+		stdtime = gettime(start);
+		pushtoVector<MAP_STD>(&std2, &v1);
+		pushtoVector<MAP_STD>(&std3, &v1);
+		pushtoVector<MAP_STD>(&std4, &v1);
+
+		MAP_FT ft1;
+		for (int i = 0, j = 5; i < 10000; i++, j++)
+			ft1.insert(ft::make_pair(i, j));
+		gettimeofday(&start, NULL);
+		MAP_FT ft2(ft1.begin(), ft1.end());
+		MAP_FT ft3(ft2);
+		MAP_FT ft4;
+		fttime = gettime(start);
+		pushtoVector<MAP_FT >(&ft2, &v2);
+		pushtoVector<MAP_FT >(&ft3, &v2);
+		pushtoVector<MAP_FT >(&ft4, &v2);
+
+
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		compareVectors(v1, v2);
+		std::cout << std::endl;
 	}
-	// {
-	// 	std::list<int, int> lst;
-	// 	unsigned int lst_size = 10;
-	// 	for (unsigned int i = 0; i < lst_size; ++i)
-	// 	{
-	// 		lst.push_back(T3(lst_size - i, i));
-	// 		std::cout << "key: " << lst_size - i << "\tval: " << i << std::endl;
-	// 	}
-	// 	std::cout << "before range construction" << std::endl;
-	// 	ft::map<int, int> mp(lst.begin(), lst.end());
-	// 	std::cout << "after range construction" << std::endl;
-	// 	ft::map<int, int>::iterator it = mp.begin(), ite = mp.end();
-	// 	std::cout << "after iterator creation" << std::endl;
-	// 	mp.printTree();
-	// }
 }
