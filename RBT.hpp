@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:54:10 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/27 10:01:57 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/02/27 11:08:38 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -338,7 +338,6 @@ namespace ft
 
 		void erase(value_type &val)
 		{
-			std::cout << "ERASE VALUE TYPE" << std::endl;
 			node_pointer node = this->find_node(val);
 			if (node == this->_end || node == this->_rend)
 				return ;
@@ -353,7 +352,6 @@ namespace ft
 		template<typename Key>
 		size_type erase (Key &key)
 		{
-			std::cout << "ERASE KEY" << std::endl;
 			node_pointer node = this->find_node<Key>(key);
 			if (node == this->_end || node == this->_rend)
 				return (0);
@@ -367,14 +365,13 @@ namespace ft
 
 		/** similar to BST deletion, but with more specific cases
 		 * three base cases that might get more specific
-		 * 	Case 1: node has no children - just replace it with NIL node
-		 * 	Case 2: node has one child - replace node with its child
-		 * 	Case 3: node has two children - find nodes successor and have it take nodes position in the tree
+		 *  Case 0: tree only has one element at root - delete it and set tree to 0
+		 * 	Case 1: node has up to one child - just replace it with its child or a NIL node
+		 * 	Case 2: node has two children - find nodes successor and have it take nodes position in the tree
 		 * 		in that case, the original subtrees of node become the subtrees of the new node
 		*/
 		void erase(node_pointer node)
 		{
-			std::cout << "ERASE NODE" << std::endl;
 			if (!this->_root->left_child && !this->_root->right_child && this->_root != this->_end)
 			{
 				deleteNode(this->_root);
@@ -382,71 +379,57 @@ namespace ft
 				this->_size--;
 				return ;
 			}
-			node_pointer movedupnode;
+			node_pointer moved_node;
 			bool erasednode_color;
 			this->_size--;
 			if (!node->left_child || !node->right_child)
 			{
-				std::cout << "UP TO ONE CHILD" << std::endl;
 				erasednode_color = node->color;
-				movedupnode = transplant(node);
+				moved_node = transplant(node);
 			}
 			else
 			{
-				std::cout << "TWO CHILDREN" << std::endl;
 				node_pointer successor = this->successor(node);
 				this->_allocator.destroy(node->content);
 				this->_allocator.construct(node->content, *(successor->content));
 				erasednode_color = successor->color;
-				movedupnode = transplant(successor);
-				std::cout << "AFTER TWO CHILDREN" << std::endl;
+				moved_node = transplant(successor);
 			}
 			if (erasednode_color == BLACK)
 			{
-				std::cout << "FIX_ERASE" << std::endl;
-				fixErase(movedupnode);
+				fixErase(moved_node);
 			}
-			if (movedupnode && !movedupnode->content)
+			if (moved_node && !moved_node->content)
 			{
 
-				if (movedupnode == movedupnode->parent->left_child)
-					movedupnode->parent->left_child = NULL;
-				else if (movedupnode == movedupnode->parent->right_child)
-					movedupnode->parent->right_child = NULL;
-				this->_nodeAlloc.deallocate(movedupnode, 1);
+				if (moved_node == moved_node->parent->left_child)
+					moved_node->parent->left_child = NULL;
+				else if (moved_node == moved_node->parent->right_child)
+					moved_node->parent->right_child = NULL;
+				this->_nodeAlloc.deallocate(moved_node, 1);
 			}
-			std::cout << "END OF ERASE" << std::endl;
 		}
 
 		void fixErase(node_pointer node)
 		{
-			std::cout << "START FIX ERASE" << std::endl;
 			if (node == this->_root)
 			{
-				std::cout << "MOVED NODE IS ROOT" << std::endl;
 				node->color = BLACK;
 				return ;
 			}
 			node_pointer sibling_node = sibling(node);
-			// std::cout << "NODE CONTENT " << (*node->content).second << std::endl;
-			std::cout << "SIBLING CONTENT " << (*sibling_node->content).second << std::endl;
-			if (sibling_node && sibling_node->color == RED)
+			if (sibling_node->color == RED)
 			{
-				std::cout << "RED SIBLING" << std::endl;
 				sibling_node->color = BLACK;
 				node->parent->color = RED;
 				if (node == node->parent->left_child)
 					rotate_left(node->parent);
 				else
 					rotate_right(node->parent);
-				sibling_node = node->parent->left_child;
-				if (sibling_node == node)
-					sibling_node = node->parent->right_child;
+				sibling_node = sibling(node);
 			}
-			std::cout << "SHEESH" << std::endl;
 			if (isBlack(sibling_node->left_child) && isBlack(sibling_node->right_child))
 			{
-				std::cout << "SIBLING HAS TWO BLACK CHILDREN" << std::endl;
 				sibling_node->color = RED;
 				if (node->parent->color == RED)
 					node->parent->color = BLACK;
@@ -455,10 +438,8 @@ namespace ft
 			}
 			else
 			{
-				std::cout << "SIBLING HAS ONLY ONE BLACK CHILD" << std::endl;
 				if (is_left_son(node) && isBlack(sibling_node->right_child))
 				{
-					std::cout << "RIGHT CHILD IS BLACK" << std::endl;
 					sibling_node->left_child->color = BLACK;
 					sibling_node->color = RED;
 					rotate_right(sibling_node);
@@ -466,7 +447,6 @@ namespace ft
 				}
 				else if (!is_left_son(node) && isBlack(sibling_node->left_child))
 				{
-					std::cout << "LEFT CHILD IS BLACK" << std::endl;
 					sibling_node->right_child->color = BLACK;
 					sibling_node->color = RED;
 					rotate_left(sibling_node);
@@ -489,7 +469,7 @@ namespace ft
 
 		bool isBlack(node_pointer node)
 		{
-			return (node->color == BLACK || !node);
+			return (!node || node->color == BLACK);
 		}
 
 		/**
@@ -497,20 +477,18 @@ namespace ft
 		 * if a child exists, calls delete_with_one_child
 		 * otherwise, either just deletes (if its a RED node)
 		 * or replaces with a NULL node (if its a BLACK node) and then deletes it
+		 * returns pointer to deleted node
 		 * */
 		node_pointer transplant(node_pointer node)
 		{
-			std::cout << "TRANSPLANT" << std::endl;
 			node_pointer temp;
 			if (node->left_child || node->right_child)
 			{
-				std::cout << "END OF TRANSPLANT" << std::endl;
 				return (delete_with_one_child(node));
 			}
 			else if (node->color == RED)
 			{
 				deleteNode(node);
-				std::cout << "END OF TRANSPLANT" << std::endl;
 				return (NULL);
 			}
 			else
@@ -521,12 +499,11 @@ namespace ft
 				temp->right_child = NULL;
 				temp->content = NULL;
 				temp->parent = node->parent;
-				if (node == node->parent->left_child)
+				if (is_left_son(node))
 					node->parent->left_child = temp;
 				else
 					node->parent->right_child = temp;
 				deleteNode(node);
-				std::cout << "END OF TRANSPLANT" << std::endl;
 				return (temp);
 			}
 	}
@@ -766,12 +743,9 @@ namespace ft
 		{
 			if( node != NULL )
 			{
-				std::cout << prefix;
 
-				std::cout << (isLeft ? "├───" : "└───" );
 
 				// print the value of the node
-				std::cout << (node->color == BLACK ? COLOR_BRIGHT_DARK_GREY : COLOR_BRIGHT_RED ) << (*node->content).first << "/" << (*node->content).second << END << std::endl;
 
 				// enter the next tree level - left and right branch
 				printRBT( prefix + (isLeft ? "│   " : "    "), node->left_child, true);
