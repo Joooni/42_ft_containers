@@ -114,7 +114,6 @@ int main(void)
 		}
 		TIMER_STD;
 
-		std::cout << "MAP PART" << std::endl;
 		MAP_FT ft1;
 		MAP_FT::iterator ft_it;
 		MAP_FT::const_iterator ft_cit;
@@ -358,6 +357,116 @@ int main(void)
 		v2.push_back(ft2.empty());
 		v2.push_back(ft2.size());
 		TIMER_FT;
+
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		compareVectors(v1, v2);
+		std::cout << std::endl;
+	}
+	TESTHEAD(nbr_tests++)
+	{
+		std::cout << "Testing clear:" << std::endl;
+		std::vector<int> v1;
+		std::vector<int> v2;
+
+		MAP_STD std1;
+		MAP_STD std2;
+		for (int i = 0, j = 0; i < 20000; i++, j++)
+			std1.insert(std::make_pair(i,j));
+		PushToVector(&std1, &v1);
+		PushToVector(&std2, &v1);
+		TIMER_START;
+		std1.clear();
+		std2.clear();
+		TIMER_STD;
+		PushToVector(&std1, &v1);
+		PushToVector(&std2, &v1);
+
+		MAP_FT ft1;
+		MAP_FT ft2;
+		for (int i = 0, j = 0; i < 20000; i++, j++)
+			ft1.insert(ft::make_pair(i,j));
+		PushToVector(&ft1, &v2);
+		PushToVector(&ft2, &v2);
+		TIMER_START;
+		ft1.clear();
+		ft2.clear();
+		TIMER_FT;
+		PushToVector(&ft1, &v2);
+		PushToVector(&ft2, &v2);
+
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		compareVectors(v1, v2);
+		std::cout << std::endl;
+	}
+	TESTHEAD(nbr_tests++)
+	{
+		std::cout << "Testing inserts:" << std::endl;
+		std::vector<int> v1;
+		std::vector<int> v2;
+
+		MAP_STD std1;
+		MAP_STD std2;
+		PushToVector<MAP_STD>(&std1, &v1);
+		PushToVector<MAP_STD>(&std2, &v1);
+		std::pair<MAP_STD::iterator, bool> stdpair;
+		TIMER_START;
+		for (int i = 0, j = 0; i < 20000; i++, j++)
+		{
+			stdpair = std1.insert(std::make_pair(i, j));
+			v1.push_back(stdpair.first->first);
+			v1.push_back(stdpair.first->second);
+			v1.push_back(stdpair.second);
+			stdpair = std2.insert(std::make_pair(500000 - i, 500000 - j));
+			v1.push_back(stdpair.first->first);
+			v1.push_back(stdpair.first->second);
+			v1.push_back(stdpair.second);
+		}
+		for (int i = 25, j = 5; i < 500; i++, j++)
+		{
+			stdpair = std1.insert(std::make_pair(i, j));
+			v1.push_back(stdpair.first->first);
+			v1.push_back(stdpair.first->second);
+			v1.push_back(stdpair.second);
+			stdpair = std2.insert(std::make_pair(500000 - i, 500000 - j));
+			v1.push_back(stdpair.first->first);
+			v1.push_back(stdpair.first->second);
+			v1.push_back(stdpair.second);
+		}
+		TIMER_STD;
+		PushToVector<MAP_STD>(&std1, &v1);
+		PushToVector<MAP_STD>(&std2, &v1);
+
+		MAP_FT ft1;
+		MAP_FT ft2;
+		PushToVector<MAP_FT>(&ft1, &v2);
+		PushToVector<MAP_FT>(&ft2, &v2);
+		ft::pair<MAP_FT::iterator, bool> ftpair;
+		TIMER_START;
+		for (int i = 0, j = 0; i < 20000; i++, j++)
+		{
+			ftpair = ft1.insert(ft::make_pair(i, j));
+			v2.push_back(ftpair.first->first);
+			v2.push_back(ftpair.first->second);
+			v2.push_back(ftpair.second);
+			ftpair = ft2.insert(ft::make_pair(500000 - i, 500000 - j));
+			v2.push_back(ftpair.first->first);
+			v2.push_back(ftpair.first->second);
+			v2.push_back(ftpair.second);
+		}
+		for (int i = 25, j = 5; i < 500; i++, j++)
+		{
+			ftpair = ft1.insert(ft::make_pair(i, j));
+			v2.push_back(ftpair.first->first);
+			v2.push_back(ftpair.first->second);
+			v2.push_back(ftpair.second);
+			ftpair = ft2.insert(ft::make_pair(500000 - i, 500000 - j));
+			v2.push_back(ftpair.first->first);
+			v2.push_back(ftpair.first->second);
+			v2.push_back(ftpair.second);
+		}
+		TIMER_FT;
+		PushToVector<MAP_FT>(&ft1, &v2);
+		PushToVector<MAP_FT>(&ft2, &v2);
 
 		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
 		compareVectors(v1, v2);
