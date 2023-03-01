@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 09:16:57 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/27 16:51:15 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/03/01 15:56:28 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,6 @@
 #include "test_utils.hpp"
 #define MAP_STD		std::map<int, int>
 #define MAP_FT		ft::map<int, int>
-#define TIMER_START	gettimeofday(&start, NULL)
-#define TIMER_STD	stdtime = gettime(start)
-#define TIMER_FT	fttime = gettime(start)
 
 template<typename map>
 void PushToVector(map *mp, std::vector<int> *v)
@@ -41,156 +38,9 @@ int main(void)
 	int stdtime;
 	int fttime;
 
-	TESTHEAD(nbr_tests++)
-	{
-		std::cout << "Testing Iterators:" << std::endl;
-		std::vector<int> v1;
-		std::vector<int> v2;
-		MAP_STD std1;
-		MAP_STD::iterator std_it;
-		MAP_STD::const_iterator std_cit;
-		MAP_STD::reverse_iterator std_rit;
-		MAP_STD::const_reverse_iterator std_crit;
-		for (int i = 0, j = 0; i < 10; i++, j++)
-			std1.insert(std::make_pair(i, j));
-		TIMER_START;
-		std_it = std1.begin();
-		std_cit = std1.begin();
-		std_rit = std1.rbegin();
-		std_crit = std1.rbegin();
-		v1.push_back(std_it == std_cit);
-		v1.push_back(std_rit == std_crit);
-		while (std_it != std1.end())
-		{
-			v1.push_back(std_it->first);
-			v1.push_back(std_it->second);
-			std_it++;
-		}
-		--std_it;
-		while (std_it != std1.begin())
-		{
-			v1.push_back(std_it->first);
-			v1.push_back(std_it->second);
-			std_it--;
-		}
-		while (std_cit != std1.end())
-		{
-			v1.push_back(std_cit->first);
-			v1.push_back(std_cit->second);
-			std_cit++;
-		}
-		--std_cit;
-		while (std_cit != std1.begin())
-		{
-			v1.push_back(std_cit->first);
-			v1.push_back(std_cit->second);
-			std_cit--;
-		}
-		while (std_rit != std1.rend())
-		{
-			v1.push_back(std_rit->first);
-			v1.push_back(std_rit->second);
-			std_rit++;
-		}
-		--std_rit;
-		while (std_rit != std1.rbegin())
-		{
-			v1.push_back(std_rit->first);
-			v1.push_back(std_rit->second);
-			std_rit--;
-		}
-		while (std_crit != std1.rend())
-		{
-			v1.push_back(std_crit->first);
-			v1.push_back(std_crit->second);
-			std_crit++;
-		}
-		--std_crit;
-		while (std_crit != std1.rbegin())
-		{
-			v1.push_back(std_crit->first);
-			v1.push_back(std_crit->second);
-			std_crit--;
-		}
-		TIMER_STD;
-
-		MAP_FT ft1;
-		MAP_FT::iterator ft_it;
-		MAP_FT::const_iterator ft_cit;
-		MAP_FT::reverse_iterator ft_rit;
-		MAP_FT::const_reverse_iterator ft_crit;
-		for (int i = 0, j = 0; i < 10; i++, j++)
-			ft1.insert(ft::make_pair(i, j));
-		TIMER_START;
-		ft_it = ft1.begin();
-		ft_cit = ft1.begin();
-		ft_rit = ft1.rbegin();
-		ft_crit = ft1.rbegin();
-		v2.push_back(ft_it == ft_cit);
-		v2.push_back(ft_rit == ft_crit);
-		while (ft_it != ft1.end())
-		{
-			v2.push_back(ft_it->first);
-			v2.push_back(ft_it->second);
-			ft_it++;
-		}
-		--ft_it;
-		while (ft_it != ft1.begin())
-		{
-			v2.push_back(ft_it->first);
-			v2.push_back(ft_it->second);
-			ft_it--;
-		}
-		while (ft_cit != ft1.end())
-		{
-			v2.push_back(ft_cit->first);
-			v2.push_back(ft_cit->second);
-			ft_cit++;
-		}
-		--ft_cit;
-		while (ft_cit != ft1.begin())
-		{
-			v2.push_back(ft_cit->first);
-			v2.push_back(ft_cit->second);
-			ft_cit--;
-		}
-		while (ft_rit != ft1.rend())
-		{
-			v2.push_back(ft_rit->first);
-			v2.push_back(ft_rit->second);
-			ft_rit++;
-		}
-		--ft_rit;
-		while (ft_rit != ft1.rbegin())
-		{
-			v2.push_back(ft_rit->first);
-			v2.push_back(ft_rit->second);
-			ft_rit--;
-		}
-		while (ft_crit != ft1.rend())
-		{
-			v2.push_back(ft_crit->first);
-			v2.push_back(ft_crit->second);
-			ft_crit++;
-		}
-		--ft_crit;
-		while (ft_crit != ft1.rbegin())
-		{
-			v2.push_back(ft_crit->first);
-			v2.push_back(ft_crit->second);
-			ft_crit--;
-		}
-		TIMER_FT;
-
-
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
-		compareVectors(v1, v2);
-		std::cout << std::endl;
-	}
-
 	TESTHEAD(nbr_tests++);
 	{
-		std::cout << "Testing map constructors (insertion one by one, by range, copy, empty):" << std::endl;
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing map constructors (insertion one by one, by range, copy, empty):" << END << std::endl;
 		std::vector<int> v1;
 		std::vector<int> v2;
 
@@ -225,7 +75,7 @@ int main(void)
 	}
 	TESTHEAD(nbr_tests++)
 	{
-		std::cout << "Testing assignment operator:" << std::endl;
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing assignment operator:" << END << std::endl;
 		std::vector<int> v1;
 		std::vector<int> v2;
 
@@ -267,13 +117,13 @@ int main(void)
 		PushToVector<MAP_FT>(&ft3, &v2);
 		PushToVector<MAP_FT>(&ft4, &v2);
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "STD:\t" << stdtime << "ms\nFT:\t" << fttime  << "ms\n" << END;
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
 	TESTHEAD(nbr_tests++)
 	{
-		std::cout << "Testing element access:" << std::endl;
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing element access:" << END << std::endl;
 		std::vector<int> v1;
 		std::vector<int> v2;
 
@@ -332,7 +182,7 @@ int main(void)
 	}
 	TESTHEAD(nbr_tests++)
 	{
-		std::cout << "Testing Capacity functions:" << std::endl;
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing Capacity functions:" << END << std::endl;
 		std::vector<int> v1;
 		std::vector<int> v2;
 
@@ -364,7 +214,7 @@ int main(void)
 	}
 	TESTHEAD(nbr_tests++)
 	{
-		std::cout << "Testing clear:" << std::endl;
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing clear:" << END << std::endl;
 		std::vector<int> v1;
 		std::vector<int> v2;
 
@@ -400,7 +250,7 @@ int main(void)
 	}
 	TESTHEAD(nbr_tests++)
 	{
-		std::cout << "Testing inserts:" << std::endl;
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing inserts: single" << END << std::endl;
 		std::vector<int> v1;
 		std::vector<int> v2;
 
@@ -459,6 +309,7 @@ int main(void)
 			v2.push_back(ftpair.first->first);
 			v2.push_back(ftpair.first->second);
 			v2.push_back(ftpair.second);
+			// std::cout << COLOR_YELLOW << COLOR_FAINT << (ftpair.second ? "true" : "false") << std::endl << END <<;
 			ftpair = ft2.insert(ft::make_pair(500000 - i, 500000 - j));
 			v2.push_back(ftpair.first->first);
 			v2.push_back(ftpair.first->second);
@@ -474,14 +325,336 @@ int main(void)
 	}
 	TESTHEAD(nbr_tests++)
 	{
-		std::cout << "Testing:" << std::endl;
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing inserts: range" << END << std::endl;
 		std::vector<int> v1;
 		std::vector<int> v2;
+
+		MAP_STD std1;
+		MAP_STD std2;
+		PushToVector<MAP_STD>(&std1, &v1);
+		PushToVector<MAP_STD>(&std2, &v1);
+		for (int i = 0, j = 0; i < 10000; i++, j++)
+			std1.insert(std::make_pair(i, j));
+		TIMER_START;
+		std2.insert(std1.begin(), std1.end());
+		TIMER_STD;
+		PushToVector<MAP_STD>(&std1, &v1);
+		PushToVector<MAP_STD>(&std2, &v1);
+
+		MAP_FT ft1;
+		MAP_FT ft2;
+		PushToVector<MAP_FT>(&ft1, &v2);
+		PushToVector<MAP_FT>(&ft2, &v2);
+		for (int i = 0, j = 0; i < 10000; i++, j++)
+			ft1.insert(ft::make_pair(i, j));
+		TIMER_START;
+		ft2.insert(ft1.begin(), ft1.end());
+		TIMER_FT;
+		PushToVector<MAP_FT>(&ft1, &v2);
+		PushToVector<MAP_FT>(&ft2, &v2);
 
 
 		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
+	TESTHEAD(nbr_tests++)
+	{
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing erase: from iterator (single and range)" << END << std::endl;
+		std::vector<int> v1;
+		std::vector<int> v2;
+
+		MAP_STD std1;
+		for (int i = 0, j = 0; i < 10000; i++, j++)
+			std1.insert(std::make_pair(i, j));
+		MAP_STD::iterator it_std1 = std1.begin();
+		MAP_STD::iterator it_std2 = std1.begin();
+		PushToVector<MAP_STD>(&std1, &v1);
+		for (int i = 0; i < 500; i++)
+		{
+			++it_std1;
+			++it_std2;
+			++it_std2;
+		}
+		TIMER_START;
+		std1.erase(std1.begin());
+		std1.erase(it_std1, it_std2);
+		TIMER_STD;
+		PushToVector<MAP_STD>(&std1, &v1);
+
+		MAP_FT ft1;
+		for (int i = 0, j = 0; i < 10000; i++, j++)
+			ft1.insert(ft::make_pair(i, j));
+		MAP_FT::iterator it_ft1 = ft1.begin();
+		MAP_FT::iterator it_ft2 = ft1.begin();
+		PushToVector<MAP_FT>(&ft1, &v2);
+		for (int i = 0; i < 500; i++)
+		{
+			++it_ft1;
+			++it_ft2;
+			++it_ft2;
+		}
+		TIMER_START;
+		ft1.erase(ft1.begin());
+		ft1.erase(it_ft1, it_ft2);
+		TIMER_FT;
+		PushToVector<MAP_FT>(&ft1, &v2);
+
+
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		compareVectors(v1, v2);
+		std::cout << std::endl;
+	}
+	TESTHEAD(nbr_tests++)
+	{
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing erase: key" << std::endl << END;
+		std::vector<int> v1;
+		std::vector<int> v2;
+
+		MAP_STD std1;
+		for (int i = 0, j = 0; i < 50000; i++, j++)
+			std1.insert(std::make_pair(i, j));
+		PushToVector<MAP_STD>(&std1, &v1);
+		TIMER_START;
+		for (int i = 0; i < 1000; i++)
+			v1.push_back(std1.erase(i * 7));
+		TIMER_STD;
+		PushToVector<MAP_STD>(&std1, &v1);
+
+		MAP_FT ft1;
+		for (int i = 0, j = 0; i < 50000; i++, j++)
+			ft1.insert(ft::make_pair(i, j));
+		PushToVector<MAP_FT>(&ft1, &v2);
+		TIMER_START;
+		for (int i = 0; i < 1000; i++)
+			v2.push_back(ft1.erase(i * 7));
+		TIMER_FT;
+		PushToVector<MAP_FT>(&ft1, &v2);
+
+
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		compareVectors(v1, v2);
+		std::cout << std::endl;
+	}
+	TESTHEAD(nbr_tests++)
+	{
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing map swap:" << std::endl << END;
+		std::vector<int> v1;
+		std::vector<int> v2;
+
+		MAP_STD std1;
+		MAP_STD std2;
+		for (int i = 0, j = 100; i < 100; i++, j--)
+		{
+			std1.insert(std::make_pair(i, j));
+			std2.insert(std::make_pair(j, i));
+		}
+		MAP_STD::iterator it_std1 = std1.begin();
+		MAP_STD::iterator it_std2 = std2.begin();
+		v1.push_back(it_std1 == std1.begin());
+		v1.push_back(it_std2 == std1.begin());
+		v1.push_back(it_std1 == std2.begin());
+		v1.push_back(it_std2 == std2.begin());
+		PushToVector<MAP_STD>(&std1, &v1);
+		PushToVector<MAP_STD>(&std2, &v1);
+		TIMER_START;
+		std1.swap(std2);
+		TIMER_STD;
+		v1.push_back(it_std1 == std1.begin());
+		v1.push_back(it_std2 == std1.begin());
+		v1.push_back(it_std1 == std2.begin());
+		v1.push_back(it_std2 == std2.begin());
+		PushToVector<MAP_STD>(&std1, &v1);
+		PushToVector<MAP_STD>(&std2, &v1);
+
+		MAP_FT ft1;
+		MAP_FT ft2;
+		for (int i = 0, j = 100; i < 100; i++, j--)
+		{
+			ft1.insert(ft::make_pair(i, j));
+			ft2.insert(ft::make_pair(j, i));
+		}
+		MAP_FT::iterator it_ft1 = ft1.begin();
+		MAP_FT::iterator it_ft2 = ft2.begin();
+		v2.push_back(it_ft1 == ft1.begin());
+		v2.push_back(it_ft2 == ft1.begin());
+		v2.push_back(it_ft1 == ft2.begin());
+		v2.push_back(it_ft2 == ft2.begin());
+		PushToVector<MAP_FT>(&ft1, &v2);
+		PushToVector<MAP_FT>(&ft2, &v2);
+		TIMER_START;
+		ft1.swap(ft2);
+		TIMER_FT;
+		v2.push_back(it_ft1 == ft1.begin());
+		v2.push_back(it_ft2 == ft1.begin());
+		v2.push_back(it_ft1 == ft2.begin());
+		v2.push_back(it_ft2 == ft2.begin());
+		PushToVector<MAP_FT>(&ft1, &v2);
+		PushToVector<MAP_FT>(&ft2, &v2);
+
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		compareVectors(v1, v2);
+		std::cout << std::endl;
+	}
+	TESTHEAD(nbr_tests++)
+	{
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing Lookup functions (count ,find, equal_range, lower_bound, upper_bound):" << std::endl << END;
+		std::vector<int> v1;
+		std::vector<int> v2;
+
+		MAP_STD std1;
+		for (int i = 0, j = 0; i < 1000; i++, j++)
+			std1.insert(std::make_pair(i, j));
+		TIMER_START;
+		for (int i = -5; i < 5; i++)
+			v1.push_back(std1.count(i));
+		for (int i = -5; i < 5; i++)
+			v1.push_back(std1.find(i)->first);
+		for (int i = -1; i < 10; i++)
+		{
+			v1.push_back(std1.equal_range(i * 5).first->first);
+			v1.push_back(std1.equal_range(i * 5).first->second);
+			v1.push_back(std1.equal_range(i * 5).second->first);
+			v1.push_back(std1.equal_range(i * 5).second->second);
+			v1.push_back(std1.lower_bound(i * 5)->first);
+			v1.push_back(std1.lower_bound(i * 5)->second);
+			v1.push_back(std1.upper_bound(i * 5)->first);
+			v1.push_back(std1.upper_bound(i * 5)->second);
+		}
+		v1.push_back(std1.equal_range(1500).first == std1.end());
+		v1.push_back(std1.equal_range(1500).second  == std1.end());
+		v1.push_back(std1.lower_bound(1500) == std1.end());
+		v1.push_back(std1.upper_bound(1500) == std1.end());
+		TIMER_STD;
+
+		MAP_FT ft1;
+		for (int i = 0, j = 0; i < 1000; i++, j++)
+			ft1.insert(ft::make_pair(i, j));
+		TIMER_START;
+		for (int i = -5; i < 5; i++)
+			v2.push_back(ft1.count(i));
+		for (int i = -5; i < 5; i++)
+			v2.push_back(ft1.find(i)->first);
+		for (int i = -1; i < 10; i++)
+		{
+			v2.push_back(ft1.equal_range(i * 5).first->first);
+			v2.push_back(ft1.equal_range(i * 5).first->second);
+			v2.push_back(ft1.equal_range(i * 5).second->first);
+			v2.push_back(ft1.equal_range(i * 5).second->second);
+			v2.push_back(ft1.lower_bound(i * 5)->first);
+			v2.push_back(ft1.lower_bound(i * 5)->second);
+			v2.push_back(ft1.upper_bound(i * 5)->first);
+			v2.push_back(ft1.upper_bound(i * 5)->second);
+		}
+		v2.push_back(ft1.equal_range(1500).first == ft1.end());
+		v2.push_back(ft1.equal_range(1500).second  == ft1.end());
+		v2.push_back(ft1.lower_bound(1500) == ft1.end());
+		v2.push_back(ft1.upper_bound(1500) == ft1.end());
+		TIMER_FT;
+
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		compareVectors(v1, v2);
+		std::cout << std::endl;
+	}
+	TESTHEAD(nbr_tests++)
+	{
+		std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing relational operators:" << std::endl << END;
+		std::vector<int> v1;
+		std::vector<int> v2;
+
+		MAP_STD std1;
+		MAP_STD std2;
+		TIMER_START;
+		v1.push_back(std1 == std2);
+		v1.push_back(std1 != std2);
+		v1.push_back(std1 < std2);
+		v1.push_back(std1 <= std2);
+		v1.push_back(std1 > std2);
+		v1.push_back(std1 >= std2);
+		std1.insert(std::make_pair(1,2));
+		v1.push_back(std1 == std2);
+		v1.push_back(std1 != std2);
+		v1.push_back(std1 < std2);
+		v1.push_back(std1 <= std2);
+		v1.push_back(std1 > std2);
+		v1.push_back(std1 >= std2);
+		std2.insert(std::make_pair(1,2));
+		v1.push_back(std1 == std2);
+		v1.push_back(std1 != std2);
+		v1.push_back(std1 < std2);
+		v1.push_back(std1 <= std2);
+		v1.push_back(std1 > std2);
+		v1.push_back(std1 >= std2);
+		std2.insert(std::make_pair(3,2));
+		v1.push_back(std1 == std2);
+		v1.push_back(std1 != std2);
+		v1.push_back(std1 < std2);
+		v1.push_back(std1 <= std2);
+		v1.push_back(std1 > std2);
+		v1.push_back(std1 >= std2);
+		std2.insert(std::make_pair(4,3));
+		v1.push_back(std1 == std2);
+		v1.push_back(std1 != std2);
+		v1.push_back(std1 < std2);
+		v1.push_back(std1 <= std2);
+		v1.push_back(std1 > std2);
+		v1.push_back(std1 >= std2);
+		TIMER_STD;
+
+		MAP_FT ft1;
+		MAP_FT ft2;
+		TIMER_START;
+		v2.push_back(ft1 == ft2);
+		v2.push_back(ft1 != ft2);
+		v2.push_back(ft1 < ft2);
+		v2.push_back(ft1 <= ft2);
+		v2.push_back(ft1 > ft2);
+		v2.push_back(ft1 >= ft2);
+		ft1.insert(ft::make_pair(1,2));
+		v2.push_back(ft1 == ft2);
+		v2.push_back(ft1 != ft2);
+		v2.push_back(ft1 < ft2);
+		v2.push_back(ft1 <= ft2);
+		v2.push_back(ft1 > ft2);
+		v2.push_back(ft1 >= ft2);
+		ft2.insert(ft::make_pair(1,2));
+		v2.push_back(ft1 == ft2);
+		v2.push_back(ft1 != ft2);
+		v2.push_back(ft1 < ft2);
+		v2.push_back(ft1 <= ft2);
+		v2.push_back(ft1 > ft2);
+		v2.push_back(ft1 >= ft2);
+		ft2.insert(ft::make_pair(3,2));
+		v2.push_back(ft1 == ft2);
+		v2.push_back(ft1 != ft2);
+		v2.push_back(ft1 < ft2);
+		v2.push_back(ft1 <= ft2);
+		v2.push_back(ft1 > ft2);
+		v2.push_back(ft1 >= ft2);
+		ft2.insert(ft::make_pair(4,3));
+		v2.push_back(ft1 == ft2);
+		v2.push_back(ft1 != ft2);
+		v2.push_back(ft1 < ft2);
+		v2.push_back(ft1 <= ft2);
+		v2.push_back(ft1 > ft2);
+		v2.push_back(ft1 >= ft2);
+		TIMER_FT;
+
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		compareVectors(v1, v2);
+		std::cout << std::endl;
+	}
+	// TESTHEAD(nbr_tests++)
+	// {
+	// 	std::cout << COLOR_YELLOW << COLOR_FAINT << "Testing :" << std::endl << END;
+	// 	std::vector<int> v1;
+	// 	std::vector<int> v2;
+
+
+
+	// 	std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+	// 	compareVectors(v1, v2);
+	// 	std::cout << std::endl;
+	// }
 
 }

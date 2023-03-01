@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 11:19:49 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/15 14:02:45 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/03/01 08:42:12 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ class reverse_iterator
 		reference operator*() const
 		{
 			iterator_type _temp(this->_current);
-			_temp--;
+			--_temp;
 			return (*_temp);
 		}
 
