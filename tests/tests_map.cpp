@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 09:16:57 by jsubel            #+#    #+#             */
-/*   Updated: 2023/03/01 15:56:28 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/03/02 15:15:01 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ int main(void)
 		PushToVector<MAP_FT >(&ft4, &v2);
 
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
+
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
@@ -117,7 +118,7 @@ int main(void)
 		PushToVector<MAP_FT>(&ft3, &v2);
 		PushToVector<MAP_FT>(&ft4, &v2);
 
-		std::cout << COLOR_YELLOW << COLOR_FAINT << "STD:\t" << stdtime << "ms\nFT:\t" << fttime  << "ms\n" << END;
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime  << "ms\n";
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
@@ -175,7 +176,8 @@ int main(void)
 		v2.push_back(ft1[8]);
 		TIMER_FT;
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
+
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 
@@ -208,7 +210,8 @@ int main(void)
 		v2.push_back(ft2.size());
 		TIMER_FT;
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
+
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
@@ -244,7 +247,8 @@ int main(void)
 		PushToVector(&ft1, &v2);
 		PushToVector(&ft2, &v2);
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
+
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
@@ -319,7 +323,8 @@ int main(void)
 		PushToVector<MAP_FT>(&ft1, &v2);
 		PushToVector<MAP_FT>(&ft2, &v2);
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
+
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
@@ -354,7 +359,8 @@ int main(void)
 		PushToVector<MAP_FT>(&ft2, &v2);
 
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
+
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
@@ -401,7 +407,8 @@ int main(void)
 		PushToVector<MAP_FT>(&ft1, &v2);
 
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
+
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
@@ -432,7 +439,8 @@ int main(void)
 		PushToVector<MAP_FT>(&ft1, &v2);
 
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
+
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
@@ -455,7 +463,7 @@ int main(void)
 		v1.push_back(it_std2 == std1.begin());
 		v1.push_back(it_std1 == std2.begin());
 		v1.push_back(it_std2 == std2.begin());
-		PushToVector<MAP_STD>(&std1, &v1);
+	PushToVector<MAP_STD>(&std1, &v1);
 		PushToVector<MAP_STD>(&std2, &v1);
 		TIMER_START;
 		std1.swap(std2);
@@ -492,7 +500,8 @@ int main(void)
 		PushToVector<MAP_FT>(&ft1, &v2);
 		PushToVector<MAP_FT>(&ft2, &v2);
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
+
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
@@ -552,7 +561,8 @@ int main(void)
 		v2.push_back(ft1.upper_bound(1500) == ft1.end());
 		TIMER_FT;
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
+
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
@@ -640,7 +650,8 @@ int main(void)
 		v2.push_back(ft1 >= ft2);
 		TIMER_FT;
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
+
 		compareVectors(v1, v2);
 		std::cout << std::endl;
 	}
@@ -652,7 +663,7 @@ int main(void)
 
 
 
-	// 	std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+	// 	std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
 	// 	compareVectors(v1, v2);
 	// 	std::cout << std::endl;
 	// }

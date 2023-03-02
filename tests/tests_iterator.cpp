@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tests_iterators.cpp                                :+:      :+:    :+:   */
+/*   tests_iterator.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 08:45:13 by jsubel            #+#    #+#             */
-/*   Updated: 2023/03/01 11:34:19 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/03/02 14:32:13 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int main(void)
 		std::cout << "vec_ft.rbegin()[113560]:\t" << vec_ft.rbegin()[113560] << std::endl;
 		TIMER_FT;
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
 	}
 	TESTHEAD(nbr_test++);
 	{
@@ -144,6 +144,6 @@ int main(void)
 		std::cout << "ItR:\t" << (*ft_ItR).first << "/" << (*ft_ItR).second << "\tItRE:\t" << (*ft_ItRE).first << "/" << (*ft_ItRE).second << std::endl;
 		TIMER_FT;
 
-		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms\n";
+		std::cout << "STD:\t" << stdtime << "ms\nFT:\t" << fttime << "ms " << (fttime > 20 * stdtime ? "\033[31m KO!" : "\033[32m OK!") << END << std::endl;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/10 08:40:15 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/03/02 13:41:12 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,7 +255,7 @@ class vector
 	void	reserve(size_type newCapacity)
 	{
 		if (newCapacity > this->max_size())
-			throw std::length_error("HERE GOES ERROR CODE");
+			throw std::length_error("allocator<T>::allocate(size_t n) \'n\' exceeds maximum supported size");
 		if (newCapacity > this->_capacity)
 		{
 			pointer	first = this->_start;
@@ -310,11 +310,12 @@ class vector
 		// find length of range to insert
 		InputIterator	countIt = first;
 		size_type		distance = 0;
+
+		while (countIt++ != last)
+			distance++;
 		pointer			newStart = NULL;
 		pointer			newEnd = NULL;
 		pointer			copy;
-		while (countIt++ != last)
-			distance++;
 		if (this->size() + distance > this->_capacity)
 		{
 			// reallocation necessary as new vector is bigger than current capacity
@@ -327,28 +328,41 @@ class vector
 			newStart = this->_allocator.allocate(newCapacity);
 			copy = this->_start;
 			newEnd = newStart;
-			// first loop: copy everythig from the old vector over to the new one
-			while (copy != position.base())
+			// first loop: copy everything from the old vector over to the new one
+			try
 			{
-				this->_allocator.construct(newEnd, *copy);
-				this->_allocator.destroy(copy);
-				++copy;
-				++newEnd;
+				while (copy != position.base())
+				{
+					this->_allocator.construct(newEnd, *copy);
+					this->_allocator.destroy(copy);
+					++copy;
+					++newEnd;
+				}
+				// second loop: construct new elements from the range [first, last)
+				// could i use first as an iterator?
+				while (first != last)
+				{
+					this->_allocator.construct(newEnd, *first);
+					++newEnd;
+					++first;
+				}
+				while (copy != this->_end)
+				{
+					this->_allocator.construct(newEnd, *copy);
+					this->_allocator.destroy(copy);
+					++copy;
+					++newEnd;
+				}
 			}
-			// second loop: construct new elements from the range [first, last)
-			// could i use first as an iterator?
-			while (first != last)
+			catch(...)
 			{
-				this->_allocator.construct(newEnd, *first);
-				++newEnd;
-				++first;
-			}
-			while (copy != this->_end)
-			{
-				this->_allocator.construct(newEnd, *copy);
-				this->_allocator.destroy(copy);
-				++copy;
-				++newEnd;
+				while (newStart != newEnd)
+				{
+					this->_allocator.destroy(newEnd--);
+				}
+				this->_allocator.destroy(newEnd);
+				this->_allocator.deallocate(newStart, newCapacity);
+				throw ;
 			}
 			this->_allocator.deallocate(this->_start, this->_capacity);
 			this->_start = newStart;

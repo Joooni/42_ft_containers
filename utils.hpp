@@ -6,16 +6,18 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 13:15:39 by jsubel            #+#    #+#             */
-/*   Updated: 2023/02/15 14:05:03 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/03/02 11:28:45 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <type_traits> // for is_integral
-
 #ifndef UTILITY_HPP
 # define  UTILITY_HPP
+
+#include <type_traits> // for is_integral
+#include "ft_iterator.hpp"
+
 namespace ft
 {
 template <bool B, typename T = void>
@@ -73,6 +75,7 @@ template <> struct			is_integral<unsigned char> :			public true_type {};
 template <> struct			is_integral<unsigned short int> :		public true_type {};
 template <> struct			is_integral<unsigned int> :				public true_type {};
 template <> struct			is_integral<unsigned long int> :		public true_type {};
+// uncomment these for some testers, clang is of the opinion these are C++11 extensions
 // template <> struct			is_integral<long long int> :			public true_type {};
 // template <> struct			is_integral<unsigned long long int> :	public true_type {};
 

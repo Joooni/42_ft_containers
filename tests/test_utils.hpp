@@ -6,11 +6,12 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 12:01:31 by jsubel            #+#    #+#             */
-/*   Updated: 2023/03/01 08:37:20 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/03/02 11:26:59 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/time.h>
+#include "../colors.hpp"
 typedef struct timeval	t_timeval;
 
 #define TESTHEAD(NBR)		std::cout << COLOR_YELLOW << std::string(20, '~') << "Test " << NBR << std::string(20, '~') << END << std::endl;
