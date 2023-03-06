@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 10:26:19 by jsubel            #+#    #+#             */
-/*   Updated: 2023/03/02 16:24:02 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/03/06 10:34:15 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -342,15 +342,15 @@ int main()
 		VEC_STD std1;
 		VEC_STD std2;
 		TIMER_START;
-		for (int i = 0; i < 12345; i++)
+		for (int i = 0; i < 100; i++)
 		{
 			std1.insert(std1.begin(), i);
 			std2.insert(std2.end(), i);
 		}
 		v1.push_back(*std1.insert(std1.begin(), -1));
-		v1.push_back(*std1.insert(std1.begin() + 1234, -1));
+		v1.push_back(*std1.insert(std1.begin() + 12, -1));
 		v1.push_back(*std1.insert(std1.end(), -1));
-		v1.push_back(*std1.insert(std1.end() - 5123, -1));
+		v1.push_back(*std1.insert(std1.end() - 51, -1));
 		TIMER_STD;
 		for (VEC_STD::iterator it = std1.begin(); it != std1.end(); it++)
 			v1.push_back(*it);
@@ -364,15 +364,15 @@ int main()
 		VEC_FT ft1;
 		VEC_FT ft2;
 		TIMER_START;
-		for (int i = 0; i < 12345; i++)
+		for (int i = 0; i < 100; i++)
 		{
 			ft1.insert(ft1.begin(), i);
 			ft2.insert(ft2.end(), i);
 		}
 		v2.push_back(*ft1.insert(ft1.begin(), -1));
-		v2.push_back(*ft1.insert(ft1.begin() + 1234, -1));
+		v2.push_back(*ft1.insert(ft1.begin() + 12, -1));
 		v2.push_back(*ft1.insert(ft1.end(), -1));
-		v2.push_back(*ft1.insert(ft1.end() - 5123, -1));
+		v2.push_back(*ft1.insert(ft1.end() - 51, -1));
 		TIMER_FT;
 		for (VEC_FT::iterator it = ft1.begin(); it != ft1.end(); it++)
 			v2.push_back(*it);
@@ -400,6 +400,7 @@ int main()
 		TIMER_START;
 		for (int i = 0; i < 500; i++)
 			std1.insert(std1.begin() + i, 10, -1);
+		std1.insert(std1.begin() + 10, 1000000, 58008);
 		TIMER_STD;
 		for (VEC_STD::iterator it = std1.begin(); it != std1.end(); it++)
 			v1.push_back(*it);
@@ -412,6 +413,7 @@ int main()
 		TIMER_START;
 		for (int i = 0; i < 500; i++)
 			ft1.insert(ft1.begin() + i, 10, -1);
+		ft1.insert(ft1.begin() + 10, 1000000, 58008);
 		TIMER_FT;
 		for (VEC_FT::iterator it = ft1.begin(); it != ft1.end(); it++)
 			v2.push_back(*it);

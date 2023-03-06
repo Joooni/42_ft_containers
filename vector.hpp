@@ -6,7 +6,7 @@
 /*   By: jsubel <jsubel@student.42wolfsburg.de >    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 10:29:59 by jsubel            #+#    #+#             */
-/*   Updated: 2023/03/02 13:41:12 by jsubel           ###   ########.fr       */
+/*   Updated: 2023/03/06 10:27:21 by jsubel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,13 +316,12 @@ class vector
 		pointer			newStart = NULL;
 		pointer			newEnd = NULL;
 		pointer			copy;
+		pointer			posPtr = position.base();
 		if (this->size() + distance > this->_capacity)
 		{
 			// reallocation necessary as new vector is bigger than current capacity
-			size_type	newCapacity = 0;
-			if (this->_capacity * 2 >= this->size() + distance)
-				newCapacity = this->_capacity * 2;
-			else
+			size_type	newCapacity = this->_capacity * 2;
+			if (this->size() + distance > this->_capacity * 2)
 				newCapacity = this->size() + distance;
 			// allocate necessary space and copy elements over one by one
 			newStart = this->_allocator.allocate(newCapacity);
@@ -331,35 +330,33 @@ class vector
 			// first loop: copy everything from the old vector over to the new one
 			try
 			{
-				while (copy != position.base())
+				while (copy != posPtr)
 				{
 					this->_allocator.construct(newEnd, *copy);
 					this->_allocator.destroy(copy);
-					++copy;
-					++newEnd;
+					copy++;
+					newEnd++;
 				}
 				// second loop: construct new elements from the range [first, last)
 				// could i use first as an iterator?
 				while (first != last)
 				{
 					this->_allocator.construct(newEnd, *first);
-					++newEnd;
-					++first;
+					newEnd++;
+					first++;
 				}
 				while (copy != this->_end)
 				{
 					this->_allocator.construct(newEnd, *copy);
 					this->_allocator.destroy(copy);
-					++copy;
-					++newEnd;
+					copy++;
+					newEnd++;
 				}
 			}
 			catch(...)
 			{
 				while (newStart != newEnd)
-				{
 					this->_allocator.destroy(newEnd--);
-				}
 				this->_allocator.destroy(newEnd);
 				this->_allocator.deallocate(newStart, newCapacity);
 				throw ;
